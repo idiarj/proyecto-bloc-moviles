@@ -17,11 +17,6 @@ app.use(SessionHandler.getSession())
 app.use(express.json())
 
 
-// app.get('/users', (req, res)=>{
-//     res.json(users)
-// })
-
-
 app.use('/home', isAuthMiddleware, homeRouter)
 
 

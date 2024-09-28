@@ -1,8 +1,5 @@
 import z from "zod"
 
-
-
-
 export const userRegisterSchema = z.object({
     nombre: z.string({
         required_error: 'El campo user es requerido.',
@@ -28,22 +25,6 @@ export const userRegisterSchema = z.object({
             message: `El apellido no puede tener mas de 15 caracteres.`
         }
     ),
-cedula: z.number({
-        required_error: 'El campo cedula es requerido',
-        message: 'El campo cedula debe ser un numero.'
-    }).positive({
-        message: 'La cedula debe ser un numero positivo.'
-    }).int({
-        message: 'La cedula debe ser un numero entero.'
-    }).min(1000000,
-        {
-            message: `La cedula debe tener almenos 7 digitos.`
-        }
-    ).max(99999999,
-        {
-            message: `La cedula no puede tener mas de 8 digitos.`
-        }
-    ),
     username: z.string({
             required_error: 'El campo user es requerido',
             message: 'El usuario debe ser un string'
@@ -56,7 +37,6 @@ cedula: z.number({
                 message: `El nombre de usuario no puede tener mas de 15 caracteres.`
             }
         ),
-    // profiles: z.array(z.string().min(3).max(20)).min(1).default(['Admin', 'User']),
     correo: z.string(
             {
                 required_error: 'El campo email es requerido',
@@ -75,5 +55,5 @@ cedula: z.number({
             {
                 message: `La contrasena no puede tener mas de 16 caracteres.`
             }
-        ),
+        )
     })
