@@ -5,8 +5,7 @@ Content-Type: application/json
 {
     "nombre": "Idiar",
     "apellido": "Chacin",
-    "username": "IdiArj",
-    "cedula": 30217559,
+    "username": "IdiaRj",
     "correo": "idiar16@gmail.com",
     "password": "16012004"
 }

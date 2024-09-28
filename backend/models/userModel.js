@@ -122,8 +122,8 @@ export class userModel{
         try{
             const key = 'getUserId'
             const params = [user]
-            const [{id_usuario}] = await iPgHandler.exeQuery({key, params})
-            return id_usuario
+            const [{id_user}] = await iPgHandler.exeQuery({key, params})
+            return id_user
         }catch(error){
             return {error}
         }

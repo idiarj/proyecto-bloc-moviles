@@ -1,9 +1,9 @@
 {
-    "insert_persona": "INSERT INTO persona (nom_persona, ape_persona, cedu_persona) VALUES ($1, $2, $3) RETURNING id_persona",
-    "insert_username": "INSERT INTO usuario (nom_usuario, correo_usuario, password_usuario, id_persona) VALUES ($1, $2, $3, $4)",
+    "insert_persona": "INSERT INTO persona (nom_persona, apellido_perso) VALUES ($1, $2) RETURNING id_persona",
+    "insert_username": "INSERT INTO usuario (nom_usu, correo_usu, contra_usu, id_persona) VALUES ($1, $2, $3, $4)",
     "getAllUsers": "SELECT nombre_usu as usuario FROM usuario",
-    "verifyUser": "SELECT DISTINCT id_usuario as userId, nom_usuario AS username, correo_usuario as email FROM usuario WHERE LOWER(nom_usuario) = LOWER($1)",
-    "verifyPassword": "SELECT password_usuario as password FROM usuario WHERE nom_usuario = $1",
-    "findByEmail":"SELECT * FROM usuario WHERE correo_usuario = $1",
+    "verifyUser": "SELECT DISTINCT id_user as userId, nom_usu AS username, correo_usu as email FROM usuario WHERE LOWER(nom_usu) = LOWER($1)",
+    "verifyPassword": "SELECT contra_usu as password FROM usuario WHERE nom_usu = $1",
+    "findByEmail":"SELECT * FROM usuario WHERE correo_usu = $1",
     "select_personas": "SELECT * FROM persona"
 }
