@@ -1,0 +1,98 @@
+### Registrar usuario
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "nombre": "Idiar",
+    "apellido": "Chacin",
+    "username": "IdiArj",
+    "cedula": 30217559,
+    "correo": "idiar16@gmail.com",
+    "password": "16012004"
+}
+
+### Logear un usuario
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username": "Burgosz",
+    "password": "nathaly2003"
+}
+
+### Home
+GET http://localhost:3000/home
+
+### Crear un proyecto
+POST http://localhost:3000/projects/crearProyecto
+Content-Type: application/json
+
+
+{
+    "projectName": "Periodico Digital: El Zuliano",
+    "objective": "Proyecto Final Ing de Software II",
+    "members": [
+        {
+            "cedula": 30217559,
+            "profiles": ["Desarrollador", "Desarrollador Back-End", "Arquitecto de Software"]
+        },
+        {
+            "cedula": 30819564,
+            "profiles": ["Desarrollador", "Desarrollador Front-End"]
+        },
+        {
+            "cedula": 30310333,
+            "profiles": ["Analista", "Apoyo"]   
+        },
+        {
+            "cedula": 31169904,
+            "profiles": ["Apoyo", "Documentista"]
+        }
+    ],
+    "startDate": "2024-05-07",
+    "endDate": "2024-07-22",
+    "state": "Empezado"
+}
+
+### Ver recursos
+GET http://localhost:3000/recursos
+
+### Ver perfiles de negocio del sistema
+GET http://localhost:3000/profiles/bussines
+
+### Crear recurso
+POST http://localhost:3000/recursos/crearRecurso
+Content-Type: application/json
+
+{
+    "nombre": "Jesus",
+    "apellido": "Finol",
+    "cedula": 31169904
+}
+
+### Ver proyectos del usuario logeado
+GET http://localhost:3000/projects
+
+### Eliminar un proyecto
+DELETE http://localhost:3000/projects/10
+
+
+### Eliminar un recurso
+DELETE http://localhost:3000/recursos/10
+
+### Ver estados
+GET http://localhost:3000/status
+
+### Crear actividad
+POST http://localhost:3000/actividades/13
+Content-Type: application/json
+
+{
+    "activityName": "Reunión de inicio",
+    "objective": "Planificar el proyecto",
+    "startDate": "2024-05-07",
+    "endDate": "2024-05-07"
+}
+
+### Ver detalle proyecto
+GET http://localhost:3000/projects/13
