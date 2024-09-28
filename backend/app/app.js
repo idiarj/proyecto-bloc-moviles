@@ -4,9 +4,9 @@
 import express from 'express'
 import cors from 'cors'
 import cors_config from '../config/cors-config.json'  assert {type: 'json'}
-import { loginRouter, registerRouter, logoutRouter, changePassRouter, homeRouter, passResetRouter, profilesRouter, recursosRouter } from '../src/routes/dispatcher.js'
+import { loginRouter, registerRouter, logoutRouter, homeRouter } from '../src/routes/dispatcher.js'
 import { SessionHandler } from '../data/iSession/iSession.js'
-import { iPgHandler } from '../data/psql-data/iPgManager.js'
+// import { iPgHandler } from '../data/psql-data/iPgManager.js'
 import { isAuthMiddleware } from '../src/middlewares/isAuthMiddleware.js'
 
 
@@ -23,9 +23,7 @@ app.use(express.json())
 
 
 app.use('/home', isAuthMiddleware, homeRouter)
-app.use('/recursos', recursosRouter)
 
-app.use('/profiles', profilesRouter)
 
 app.use('/register', registerRouter)
 
@@ -33,9 +31,6 @@ app.use('/login', loginRouter)
 
 app.use('/logout', logoutRouter)
 
-app.use('/changePassword', changePassRouter)
-
-app.use('/forgot-password',passResetRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=>{

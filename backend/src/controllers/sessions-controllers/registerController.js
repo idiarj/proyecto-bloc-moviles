@@ -1,7 +1,5 @@
-import { CryptManager } from "../../../sub-sistemas/security/CryptManager.js"
+
 import { registerValidation } from "../../../data/iValidation/iValidation.js"
-import { v4 as uuidv4 } from 'uuid'
-import users from "../../../data/json-data/users.json" assert { type: "json" }
 import { userModel } from "../../../models/userModel.js"
 
 /**
