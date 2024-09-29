@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
-import login from '../assets/login.jpg'; 
-import CustomInput from '../components/CustomInput';  
+import { View, Text, StyleSheet, ImageBackground, Alert } from 'react-native';
+import CustomInput from '../../components/Input/CustomInput';  
+import CustomButton from '../../components/Button/CustomButton'; 
+import login from '../../assets/login.jpg'; 
+
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-
-    const onSingInPress = () => {
-        console.log('Sing in');
-    };  
-
-    const handleLogin = () => {
+    function onSingInPressed() {
         if (!username || !password) {
             Alert.alert('Error', 'Por favor completa todos los campos.');
-            return;
+        } else { //logica de inicio de sesion,
+            Alert.alert('Inicio de sesión', '¡Has iniciado sesión correctamente!');
+            console.log('Sing in');
         }
-        //logica de inicio de sesion, 
-        Alert.alert('Inicio de sesión', '¡Has iniciado sesión correctamente!');
-    };
+    }
 
     return (
         <ImageBackground source={login} style={styles.background}>
@@ -32,7 +29,7 @@ const Login = () => {
                 <CustomInput
                     value={username}
                     setvalue={setUsername}
-                    placeholder="Nombre de usuario"
+                    placeholder="Correo"
                 />
                 <CustomInput
                     value={password}
@@ -41,14 +38,12 @@ const Login = () => {
                     secureTextEntry
                 />
 
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                    <Text style={styles.buttonText}>Iniciar sesión</Text>
-                </TouchableOpacity>
-
+                <CustomButton text="Acceder" onPress={onSingInPressed}/>
 
                 <Text style={styles.signInText}>
                     ¿No tienes cuenta? <Text style={styles.signInLink}>Regístrate aquí</Text>
                 </Text>
+
             </View>
         </ImageBackground>
     );

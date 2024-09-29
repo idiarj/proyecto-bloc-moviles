@@ -19,7 +19,7 @@ const CustomInput = ({ value, setvalue, placeholder, secureTextEntry }) => {
 const styles = StyleSheet.create({
     inputContainer: {
         width: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)', // Fondo semitransparente
+        backgroundColor: 'rgba(255, 255, 255, 0.2)', 
         borderRadius: 10,
         marginBottom: 20,
         paddingHorizontal: 15,
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         paddingHorizontal: 10,
-        borderBottomWidth: 2, // Línea inferior
+        borderBottomWidth: 2, 
         borderColor: 'white',
     },
 });

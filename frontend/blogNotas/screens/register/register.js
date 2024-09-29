@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import register from '../assets/register.jpg'; 
-import CustomInput from '../components/CustomInput';  
+import { View, Text, ImageBackground, StyleSheet, Alert } from 'react-native';
+import CustomInput from '../../components/Input/CustomInput';  
+import CustomButton from '../../components/Button/CustomButton';
+import register from '../../assets/register.jpg';
 
 const Register = () => {
     const [nombre, setNombre] = useState('');
@@ -9,19 +10,22 @@ const Register = () => {
     const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [correoError, setCorreoError] = useState('');
+    const [username, setUsername] = useState('');
+
 
     const validarCorreo = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
 
-    const handleRegister = () => {
+    const onSingUpPressed= () => {
         if (!validarCorreo(correo)) {
             setCorreoError('Por favor ingrese un correo válido.');
         } else {
             setCorreoError('');
+            console.log('Sing up');
             Alert.alert('Registro exitoso', 'Su cuenta ha sido creada.');
-        }
+                }
     };
 
     return (
@@ -54,9 +58,10 @@ const Register = () => {
                     secureTextEntry 
                 />
 
-                <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                    <Text style={styles.buttonText}>Registrarse</Text>
-                </TouchableOpacity>
+                <Text style={styles. signInText}>Al registrarte, confirmas que aceptas nuestros términos de uso y política de privacidad.</Text>
+
+                <CustomButton text="Registrarse" onPress={onSingUpPressed}/>
+
 
                 <Text style={styles.signInText}>
                     ¿Tienes cuenta? <Text style={styles.signInLink}>Iniciar sesión aquí</Text>
@@ -92,15 +97,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginLeft: 15,
     },
-    button: {
-        backgroundColor: 'transparent',
-        borderRadius: 5,
-        borderColor: 'white',
-        borderWidth: 1,
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-        alignSelf: 'center',
-    },
+ 
     buttonText: {
         color: 'white',
         fontSize: 16,
@@ -111,7 +108,7 @@ const styles = StyleSheet.create({
     },
     signInText: {
         color: 'white',
-        marginTop: 20,
+        marginTop: 3,        
         alignSelf: 'center',
     },
     signInLink: {

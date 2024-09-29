@@ -1,13 +1,15 @@
 import React from 'react';
 import { SafeAreaView,StyleSheet, Text } from 'react-native';
-import Login from './screens/login';
-import Register from './screens/register';
+import Login from './screens/login/login';
+import Register from './screens/register/register';
+import ForgotPassword from './screens/ForgotPassword/ForgotPassword'; 
 
 const App = () => { 
   return (
    <SafeAreaView style={styles.root}>
     {/* <Login /> */}
     <Register/>
+    {/* <ForgotPassword /> */}
     </SafeAreaView> 
   );
 }
