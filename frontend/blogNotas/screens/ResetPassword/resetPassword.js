@@ -5,27 +5,36 @@ import CustomInput from '../../components/Input/CustomInput';
 import register from '../../assets/register.jpg';
 
 
-const ForgotPassword = () => {
-    const [mail, setMail] = useState("");
+const ResetPassword = () => {
+    const [code, setCode] = useState("");
+    const [newPassword, setnewPassword] = useState("");
 
-    const onSendPressed = () => {
+    const onSubmitPressed = () => {
         console.log("Send pressed");
     };
+
+
 
     return (
         <ImageBackground source={register} style={styles.background}>
         <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.root}>
                     <Text style={styles.title}>DAILY DIARIES</Text>
-                    <Text style={styles.subTitle}>Recuperar Contraseña</Text>
+                    <Text style={styles.subTitle}>Cambio de Contraseña</Text>
                    <View style={{...styles.container, width: "100%"}}>
                     <CustomInput
-                        placeholder="Ingrese su correo"
-                        value={mail}
-                        setvalue={setMail}
+                        placeholder="Ingrese el codigo"
+                        value={code}
+                        setvalue={setCode}
                     />
 
-                    <CustomButton text="Enviar" onPress={onSendPressed} />
+                    <CustomInput
+                        placeholder="Nueva Contraseña"
+                        value={newPassword}
+                        setvalue={setnewPassword}
+                    />      
+
+                    <CustomButton text="Enviar" onPress={onSubmitPressed} />
 
                     </View>
                     <CustomButton
@@ -74,4 +83,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default ForgotPassword;
+export default ResetPassword;

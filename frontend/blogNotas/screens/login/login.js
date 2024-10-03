@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ImageBackground, Alert } from 'react-native';
 import CustomInput from '../../components/Input/CustomInput';  
 import CustomButton from '../../components/Button/CustomButton'; 
 import login from '../../assets/login.jpg'; 
+import ForgotPassword from '../ForgotPassword/ForgotPassword';
 
 
 const Login = () => {
@@ -39,9 +40,11 @@ const Login = () => {
                 />
 
                 <CustomButton text="Acceder" onPress={onSingInPressed}/>
+              
+                <Text style={styles.ForgotPassword}>¿Olvidaste tu contraseña?           <Text style={styles.signInLink}>Ingresa aquí</Text></Text>
 
                 <Text style={styles.signInText}>
-                    ¿No tienes cuenta? <Text style={styles.signInLink}>Regístrate aquí</Text>
+                    ¿No tienes cuenta?                  <Text style={styles.signInLink}>Regístrate aquí</Text>
                 </Text>
 
             </View>
@@ -88,14 +91,20 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
+
+    ForgotPassword: {
+        color: 'white',
+        marginTop: 15,
+        alignSelf: 'left',
+    },
+
     signInText: {
         color: 'white',
-        marginTop: 20,
-        alignSelf: 'center',
+        marginTop: 10,
+        alignSelf: 'left',
     },
     signInLink: {
-        color: 'blue',
+        color: '#2e578c',
         textDecorationLine: 'underline',    },
 });
-
 export default Login;
