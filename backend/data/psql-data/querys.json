@@ -5,5 +5,7 @@
     "verifyUser": "SELECT DISTINCT id_user as userId, nom_usu AS username, correo_usu as email FROM usuario WHERE LOWER(nom_usu) = LOWER($1)",
     "verifyPassword": "SELECT contra_usu as password FROM usuario WHERE nom_usu = $1",
     "findByEmail":"SELECT * FROM usuario WHERE correo_usu = $1",
-    "select_personas": "SELECT * FROM persona"
+    "select_personas": "SELECT * FROM persona",
+    "getNotes": "SELECT * FROM nota WHERE id_user = $1",
+    "createNote": "INSERT INTO nota (titulo_nota, contenido_nota, id_user) VALUES ($1, $2, $3) RETURNING id_nota"
 }
