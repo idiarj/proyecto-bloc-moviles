@@ -2,35 +2,57 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, FlatList, Alert, Image, TextInput, Modal } from 'react-native';
 import CustomButton from '../../components/Button/CustomButton';  
 import fondo2 from '../../assets/fondo2.jpg'; 
-import folderIcon from '../../assets/folder.png';
-import editIcon from '../../assets/lapizN.png';  
+import editIcon from '../../assets/lapizN.png';
 import deleteIcon from '../../assets/eliminar2.png';
 import addIcon from '../../assets/agregar.png';
+import deploy from '../../assets/flechaMenu.png';
+import folderIcon from '../../assets/folder.png';
 
 const Notas = ({ navigation }) => {
     const [notes, setNotes] = useState([]);
     const [newNoteTitle, setNewNoteTitle] = useState('');
     const [newNoteText, setNewNoteText] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [editingNoteId, setEditingNoteId] = useState(null); // Estado para controlar la nota en edición
 
     const deleteNote = (id) => {
         setNotes((prevNotes) => prevNotes.filter(note => note.id !== id));
     };
 
     const editNote = (id) => {
-        Alert.alert('Editar', `Editando la nota con id: ${id}`);
+        const noteToEdit = notes.find(note => note.id === id);
+        if (noteToEdit) {
+            setNewNoteTitle(noteToEdit.title);  // Cargar el título de la nota
+            setNewNoteText(noteToEdit.text);    // Cargar el texto de la nota
+            setEditingNoteId(id);               // Guardar el ID de la nota en edición
+            setModalVisible(true);              // Mostrar el modal
+        }
     };
 
-    const addNote = () => {
+    const addOrEditNote = () => {
         if (newNoteTitle.trim() && newNoteText.trim()) {
-            const newNote = {
-                id: Date.now().toString(),
-                title: newNoteTitle,
-                text: newNoteText,
-            };
-            setNotes((prevNotes) => [...prevNotes, newNote]);
+            if (editingNoteId) {
+                // Editar nota existente
+                setNotes((prevNotes) =>
+                    prevNotes.map(note =>
+                        note.id === editingNoteId
+                            ? { ...note, title: newNoteTitle, text: newNoteText }
+                            : note
+                    )
+                );
+            } else {
+                // Agregar nueva nota
+                const newNote = {
+                    id: Date.now().toString(),
+                    title: newNoteTitle,
+                    text: newNoteText,
+                };
+                setNotes((prevNotes) => [...prevNotes, newNote]);
+            }
+            // Limpiar el formulario y cerrar el modal
             setNewNoteTitle('');
             setNewNoteText('');
+            setEditingNoteId(null);  // Limpiar el estado de edición
             setModalVisible(false);
         } else {
             Alert.alert('Error', 'Por favor ingresa título y contenido para la nota.');
@@ -55,6 +77,11 @@ const Notas = ({ navigation }) => {
     return (
         <ImageBackground source={fondo2} style={styles.background}>
             <View style={styles.container}>
+
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <Image source={deploy} style={styles.deploy} />
+                </TouchableOpacity>
+
                 <Text style={styles.title}>BIENVENIDO A TUS NOTAS</Text>
 
                 {notes.length > 0 ? (
@@ -70,48 +97,51 @@ const Notas = ({ navigation }) => {
 
                 <Text style={styles.fixedDailyDiaries}>DAILY DIARIES</Text>
 
-                {/* Modal para agregar una nueva nota */}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => setModalVisible(false)}
-                >
-                    <View style={styles.modalContainer}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalTitle}>Agregar nueva nota</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Título de la nota"
-                                value={newNoteTitle}
-                                onChangeText={setNewNoteTitle}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Texto de la nota"
-                                value={newNoteText}
-                                onChangeText={setNewNoteText}
-                                multiline={true}
-                            />
+            </View>
 
-                            <View style={styles.modalButtons}>
-                                <CustomButton onPress={addNote} text="Guardar" bgColor="#faae97" />
-                                <CustomButton onPress={() => setModalVisible(false)} text="Cancelar" bgColor="#faae97" />
-                            </View>
+            {/* Modal para agregar o editar una nota */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalTitle}>
+                            {editingNoteId ? 'Editar nota' : 'Agregar nueva nota'}
+                        </Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Título de la nota"
+                            value={newNoteTitle}
+                            onChangeText={setNewNoteTitle}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Texto de la nota"
+                            value={newNoteText}
+                            onChangeText={setNewNoteText}
+                            multiline={true}/>
+
+                        <View style={styles.modalButtons}>
+                            <CustomButton onPress={addOrEditNote} text={editingNoteId ? "Guardar cambios" : "Guardar"}  bgColor="#faae97" />
+                            <CustomButton onPress={() => setModalVisible(false)} text="Cancelar" bgColor='#faae97' />
                         </View>
                     </View>
-                </Modal>
-
-                {/* Navbar con íconos */}
-                <View style={styles.navbar}>
-                    <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
-                        <Image source={folderIcon} style={styles.navIcon} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addButton}>
-                        <Image source={addIcon} style={styles.addIcon} />
-                    </TouchableOpacity>
                 </View>
+            </Modal>
+
+           {/* Navbar con ícono de carpeta y botón para agregar nota */}
+           <View style={styles.navbar}>
+                <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
+                    <Image source={folderIcon} style={styles.navIcon} />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addButton}>
+                    <Image source={addIcon} style={styles.addIcon} />
+                </TouchableOpacity>
+
             </View>
         </ImageBackground>
     );
@@ -146,7 +176,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     note: {
-        backgroundColor: 'rgba(255,255,255,0.8)',
+        backgroundColor: 'rgba(255,255,255,0.3)',
         padding: 20,
         borderRadius: 10,
         marginBottom: 10,
@@ -157,10 +187,12 @@ const styles = StyleSheet.create({
     noteTitle: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: 'black',
     },
     noteText: {
         fontSize: 16,
         maxWidth: '60%',
+        color: 'black',
     },
     noteActions: {
         flexDirection: 'row',
@@ -186,11 +218,18 @@ const styles = StyleSheet.create({
     addIcon: {
         width: 40,
         height: 40,
+    }, 
+    deploy: {
+        width: 70,
+        height: 40,
+        marginTop: 20,
+        marginLeft: -170,
+    
     },
     navbar: {
         width: '115%',
         height: 80,
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: 'rgba(255,255,255,0.3)',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -200,8 +239,9 @@ const styles = StyleSheet.create({
         bottom: 0, 
     },
     navIcon: {
-        width: 40,
-        height: 40,
+        width: 60,
+        height: 60,
+      
     },
     modalContainer: {
         flex: 1,
