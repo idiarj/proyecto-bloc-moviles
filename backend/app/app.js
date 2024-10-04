@@ -4,7 +4,7 @@
 import express from 'express'
 import cors from 'cors'
 import cors_config from '../config/cors-config.json'  assert {type: 'json'}
-import { loginRouter, registerRouter, logoutRouter, homeRouter } from '../src/routes/dispatcher.js'
+import { loginRouter, registerRouter, logoutRouter, homeRouter, notesRouter } from '../src/routes/dispatcher.js'
 import { SessionHandler } from '../data/iSession/iSession.js'
 // import { iPgHandler } from '../data/psql-data/iPgManager.js'
 import { isAuthMiddleware } from '../src/middlewares/isAuthMiddleware.js'
@@ -25,6 +25,8 @@ app.use('/register', registerRouter)
 app.use('/login', loginRouter)
 
 app.use('/logout', logoutRouter)
+
+app.use('/notes', notesRouter)
 
 
 const PORT = process.env.PORT || 3000;
