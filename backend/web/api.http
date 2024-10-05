@@ -22,3 +22,5 @@ Content-Type: application/json
 ### Home
 GET http://localhost:3000/home
 
+### Crear una nota
+POST http://localhost:3000/notes/createNote
