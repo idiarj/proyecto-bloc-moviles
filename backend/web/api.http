@@ -5,7 +5,7 @@ Content-Type: application/json
 {
     "nombre": "Idiar",
     "apellido": "Chacin",
-    "username": "IdiaRj",
+    "username": "Idiarj",
     "correo": "idiar16@gmail.com",
     "password": "16012004"
 }
@@ -22,3 +22,5 @@ Content-Type: application/json
 ### Home
 GET http://localhost:3000/home
 
+### Crear una nota
+POST http://localhost:3000/notes/createNote
