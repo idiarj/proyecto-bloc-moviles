@@ -6,99 +6,90 @@ import editIcon from '../../assets/lapiz.png';
 import deleteIcon from '../../assets/eliminar2.png';
 import addIcon from '../../assets/agregar.png';
 import deploy from '../../assets/flechaMenu.png';
-import folderIcon from '../../assets/folderb.png';
-import fileICon from '../../assets/file.png';
+import folderIcon from '../../assets/folderb.png'; 
 import favoriteICon from '../../assets/star.png';
 
-const Notas = ({ navigation }) => {
-    const [notes, setNotes] = useState([]);
-    const [newNoteTitle, setNewNoteTitle] = useState('');
-    const [newNoteText, setNewNoteText] = useState('');
+const Carpetas = ({ navigation }) => {
+    const [folders, setFolders] = useState([]); // Cambia 'notes' por 'folders'
+    const [newFolderName, setNewFolderName] = useState(''); // Para el nombre de la carpeta
     const [modalVisible, setModalVisible] = useState(false);
-    const [editingNoteId, setEditingNoteId] = useState(null); // Estado para controlar la nota en edición
-    const [menuVisible, setMenuVisible] = useState(false);  // Para controlar el menú desplegable
-    const slideAnim = useRef(new Animated.Value(-100)).current;  // Para la animación de despliegue del menú
+    const [editingFolderId, setEditingFolderId] = useState(null); // Para editar carpetas
+    const [menuVisible, setMenuVisible] = useState(false);  
+    const slideAnim = useRef(new Animated.Value(-100)).current;
 
-    const deleteNote = (id) => {
-        setNotes((prevNotes) => prevNotes.filter(note => note.id !== id));
+    const deleteFolder = (id) => {
+        setFolders((prevFolders) => prevFolders.filter(folder => folder.id !== id));
     };
 
-    const editNote = (id) => {
-        const noteToEdit = notes.find(note => note.id === id);
-        if (noteToEdit) {
-            setNewNoteTitle(noteToEdit.title);  // Cargar el título de la nota
-            setNewNoteText(noteToEdit.text);    // Cargar el texto de la nota
-            setEditingNoteId(id);               // Guardar el ID de la nota en edición
+    const editFolder = (id) => {
+        const folderToEdit = folders.find(folder => folder.id === id);
+        if (folderToEdit) {
+            setNewFolderName(folderToEdit.name); // Cargar el nombre de la carpeta
+            setEditingFolderId(id);               // Guardar el ID de la carpeta en edición
             setModalVisible(true);              // Mostrar el modal
         }
     };
 
-    const addOrEditNote = () => {
-        if (newNoteTitle.trim() && newNoteText.trim()) {
-            if (editingNoteId) {
-                // Editar nota existente
-                setNotes((prevNotes) =>
-                    prevNotes.map(note =>
-                        note.id === editingNoteId
-                            ? { ...note, title: newNoteTitle, text: newNoteText }
-                            : note
+    const addOrEditFolder = () => {
+        if (newFolderName.trim()) {
+            if (editingFolderId) {
+                // Editar carpeta existente
+                setFolders((prevFolders) =>
+                    prevFolders.map(folder =>
+                        folder.id === editingFolderId
+                            ? { ...folder, name: newFolderName }
+                            : folder
                     )
                 );
             } else {
-                // Agregar nueva nota
-                const newNote = {
+                // Agregar nueva carpeta
+                const newFolder = {
                     id: Date.now().toString(),
-                    title: newNoteTitle,
-                    text: newNoteText,
+                    name: newFolderName,
                 };
-                setNotes((prevNotes) => [...prevNotes, newNote]);
+                setFolders((prevFolders) => [...prevFolders, newFolder]);
             }
             // Limpiar el formulario y cerrar el modal
-            setNewNoteTitle('');
-            setNewNoteText('');
-            setEditingNoteId(null);  // Limpiar el estado de edición
+            setNewFolderName('');
+            setEditingFolderId(null);
             setModalVisible(false);
         } else {
-            Alert.alert('Error', 'Por favor ingresa título y contenido para la nota.');
+            Alert.alert('Error', 'Por favor ingresa un nombre para la carpeta.');
         }
     };
 
-    const renderNote = ({ item }) => (
-        <View style={styles.note}>
-            <Text style={styles.noteTitle}>{item.title}</Text>
-            <Text style={styles.noteText}>{item.text}</Text>
-            <View style={styles.noteActions}>
-                <TouchableOpacity onPress={() => editNote(item.id)}>
+    const renderFolder = ({ item }) => (
+        <View style={styles.folder}>
+            <Image source={folderIcon} style={styles.folderIcon} /> {/* Mostrar ícono de carpeta */}
+            <Text style={styles.folderName}>{item.name}</Text>
+            <View style={styles.folderActions}>
+                <TouchableOpacity onPress={() => editFolder(item.id)}>
                     <Image source={editIcon} style={styles.icon} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteNote(item.id)}>
+                <TouchableOpacity onPress={() => deleteFolder(item.id)}>
                     <Image source={deleteIcon} style={styles.icon} />
                 </TouchableOpacity>
             </View>
         </View>
     );
 
-    // Función para controlar la animación del menú desplegable
     const toggleMenu = () => {
         Animated.timing(slideAnim, {
-            toValue: menuVisible ? -100 : 0,  // Desplegar o esconder el menú
+            toValue: menuVisible ? -100 : 0,
             duration: 300,
             easing: Easing.ease,
             useNativeDriver: true,
         }).start();
-        setMenuVisible(!menuVisible);  // Cambiar estado del menú
+        setMenuVisible(!menuVisible);
     };
 
     return (
         <ImageBackground source={fondo2} style={styles.background}>
             <View style={styles.container}>
-
-                {/* Botón de despliegue */}
                 <TouchableOpacity onPress={toggleMenu} style={styles.deployContainer}>
                     <Image source={deploy} style={styles.deployIcon} />
                 </TouchableOpacity>
 
-                {/* Menú Desplegable - Solo visible cuando se toca la flecha */}
                 {menuVisible && (
                     <Animated.View style={[styles.menu, { transform: [{ translateX: slideAnim }] }]}>
                         <CustomButton
@@ -114,23 +105,22 @@ const Notas = ({ navigation }) => {
                     </Animated.View>
                 )}
 
-                <Text style={styles.title}>BIENVENIDO A TUS NOTAS</Text>
+                <Text style={styles.title}>BIENVENIDO A TUS CARPETAS</Text>
 
-                {notes.length > 0 ? (
+                {folders.length > 0 ? (
                     <FlatList
-                        data={notes}
-                        renderItem={renderNote}
+                        data={folders}
+                        renderItem={renderFolder} // Renderizar carpetas
                         keyExtractor={item => item.id}
-                        style={styles.noteList}
+                        style={styles.folderList}
                     />
                 ) : (
-                    <Text style={styles.noNotesText}>No tienes notas aún. ¡Agrega una!</Text>
+                    <Text style={styles.noFoldersText}>No tienes carpetas aún. ¡Agrega una!</Text>
                 )}
 
                 <Text style={styles.fixedDailyDiaries}>DAILY DIARIES</Text>
             </View>
 
-            {/* Modal para agregar o editar una nota */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -140,31 +130,22 @@ const Notas = ({ navigation }) => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalView}>
                         <Text style={styles.modalTitle}>
-                            {editingNoteId ? 'Editar nota' : 'Agregar nueva nota'}
+                            {editingFolderId ? 'Editar carpeta' : 'Agregar nueva carpeta'}
                         </Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Título de la nota"
-                            value={newNoteTitle}
-                            onChangeText={setNewNoteTitle}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Texto de la nota"
-                            value={newNoteText}
-                            onChangeText={setNewNoteText}
-                            multiline={true}
+                            placeholder="Nombre de la carpeta"
+                            value={newFolderName}
+                            onChangeText={setNewFolderName}
                         />
 
                         <View style={styles.modalButtons}>
-                            <CustomButton onPress={addOrEditNote} text={editingNoteId ? "Guardar cambios" : "Guardar"} bgColor="#faae97" />
+                            <CustomButton onPress={addOrEditFolder} text={editingFolderId ? "Guardar cambios" : "Guardar"} bgColor="#faae97" />
                             <CustomButton onPress={() => setModalVisible(false)} text="Cancelar" bgColor='#faae97' />
                         </View>
                     </View>
                 </View>
             </Modal>
-
-            {/* Navbar con ícono de carpeta y botón para agregar nota */}
             <View style={styles.navbar}>
 
             <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
@@ -188,6 +169,7 @@ const Notas = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    // Resto de los estilos
     background: {
         flex: 1,
         justifyContent: 'center',
@@ -206,18 +188,18 @@ const styles = StyleSheet.create({
         marginVertical: 30, 
         marginTop: 100,
     },
-    noNotesText: {
+    noFoldersText: {
         color: 'white',
         fontSize: 18,
         marginBottom: 60,
         textAlign: 'center',
         marginTop: 5,
     },
-    noteList: {
+    folderList: {
         flex: 1,
         width: '100%',
     },
-    note: {
+    folder: {
         backgroundColor: 'rgba(255,255,255,0.3)',
         padding: 20,
         borderRadius: 10,
@@ -226,17 +208,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    noteTitle: {
+    folderName: {
         fontSize: 18,
         fontWeight: 'bold',
         color: 'white',
     },
-    noteText: {
-        fontSize: 16,
-        maxWidth: '60%',
-        color: 'white',
-    },
-    noteActions: {
+    folderActions: {
         flexDirection: 'row',
     },
     icon: {
@@ -253,7 +230,6 @@ const styles = StyleSheet.create({
         fontSize: 35,
         opacity: 0.3,
     },
-  
     addButton: {
         backgroundColor: '#fff',
         borderRadius: 50,
@@ -263,54 +239,10 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
     },
-    deployContainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        padding: 10,
-        marginTop: 15,
-    },
-    deployIcon: {
-        width: 40,
-        height: 40,
-    },
-    menu: {
-        position: 'absolute',
-        top: 20,
-        left: 0,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 10,
-        padding: 10,
-        zIndex: 1,
-        elevation: 5,
-    },
-    navbar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-        padding: 20,
-        backgroundColor: 'rgba(255,255,255,0.5)',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-    },
-    navIcon: {
+    folderIcon: {
         width: 50,
         height: 50,
     },
-
-    navIcon1: {
-        width: 50,
-        height: 50,
-        left: 0,
-    },
-
-    navIcon2: {
-        width: 50,
-        height: 50,
-        left: 0,
-    },
-
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -332,15 +264,39 @@ const styles = StyleSheet.create({
     input: {
         width: '100%',
         borderBottomWidth: 1,
-        borderBottomColor: 'gray',
-        marginBottom: 15,
+        borderBottomColor: '#ccc',
+        marginBottom: 20,
         padding: 10,
     },
     modalButtons: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         width: '100%',
+    },
+    navbar: {
+        position: 'absolute',
+        bottom: 20,
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+    },
+ 
+    navIcon: {
+        width: 50,
+        height: 50,
+    },
+
+    navIcon1: {
+        width: 50,
+        height: 50,
+        left: 0,
+    },
+
+    navIcon2: {
+        width: 50,
+        height: 50,
+        left: 0,
     },
 });
 
-export default Notas;
+export default Carpetas;

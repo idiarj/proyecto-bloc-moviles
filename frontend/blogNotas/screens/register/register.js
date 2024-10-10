@@ -45,6 +45,12 @@ const Register = () => {
                     setvalue={setApellido} 
                     placeholder="Apellido" 
                 />
+
+                <CustomInput
+                    value={username} 
+                    setvalue={setUsername} 
+                    placeholder="Usuario" 
+                />  
                 <CustomInput
                     value={correo} 
                     setvalue={setCorreo} 
