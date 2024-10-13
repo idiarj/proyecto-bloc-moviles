@@ -8,6 +8,8 @@ import addIcon from '../../assets/agregar.png';
 import deploy from '../../assets/flechaMenu.png';
 import folderIcon from '../../assets/folderb.png'; 
 import favoriteICon from '../../assets/star.png';
+import fileICon from '../../assets/file.png';
+
 
 const Carpetas = ({ navigation }) => {
     const [folders, setFolders] = useState([]); // Cambia 'notes' por 'folders'
@@ -60,7 +62,7 @@ const Carpetas = ({ navigation }) => {
 
     const renderFolder = ({ item }) => (
         <View style={styles.folder}>
-            <Image source={folderIcon} style={styles.folderIcon} /> {/* Mostrar ícono de carpeta */}
+            <Image source={folderIcon} style={styles.folderIcon} />
             <Text style={styles.folderName}>{item.name}</Text>
             <View style={styles.folderActions}>
                 <TouchableOpacity onPress={() => editFolder(item.id)}>
@@ -188,6 +190,29 @@ const styles = StyleSheet.create({
         marginVertical: 30, 
         marginTop: 100,
     },
+    
+    deployContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        padding: 10,
+        marginTop: 15,
+    },
+    deployIcon: {
+        width: 40,
+        height: 40,
+    },
+    
+    navbar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        padding: 20,
+        backgroundColor: 'rgba(255,255,255,0.5)',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    },
     noFoldersText: {
         color: 'white',
         fontSize: 18,
@@ -273,14 +298,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         width: '100%',
     },
-    navbar: {
-        position: 'absolute',
-        bottom: 20,
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-    },
- 
     navIcon: {
         width: 50,
         height: 50,

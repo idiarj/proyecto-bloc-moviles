@@ -9,15 +9,18 @@ import deploy from '../../assets/flechaMenu.png';
 import folderIcon from '../../assets/folderb.png';
 import fileICon from '../../assets/file.png';
 import favoriteICon from '../../assets/star.png';
+import favAdd from '../../assets/favAgregado.png';
+import favNoAdd from '../../assets/favSinAgregar.png';
 
 const Notas = ({ navigation }) => {
     const [notes, setNotes] = useState([]);
     const [newNoteTitle, setNewNoteTitle] = useState('');
     const [newNoteText, setNewNoteText] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const [editingNoteId, setEditingNoteId] = useState(null); // Estado para controlar la nota en edición
-    const [menuVisible, setMenuVisible] = useState(false);  // Para controlar el menú desplegable
-    const slideAnim = useRef(new Animated.Value(-100)).current;  // Para la animación de despliegue del menú
+    const [editingNoteId, setEditingNoteId] = useState(null);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [favoriteNotes, setFavoriteNotes] = useState([]); 
+    const slideAnim = useRef(new Animated.Value(-100)).current;
 
     const deleteNote = (id) => {
         setNotes((prevNotes) => prevNotes.filter(note => note.id !== id));
@@ -26,17 +29,16 @@ const Notas = ({ navigation }) => {
     const editNote = (id) => {
         const noteToEdit = notes.find(note => note.id === id);
         if (noteToEdit) {
-            setNewNoteTitle(noteToEdit.title);  // Cargar el título de la nota
-            setNewNoteText(noteToEdit.text);    // Cargar el texto de la nota
-            setEditingNoteId(id);               // Guardar el ID de la nota en edición
-            setModalVisible(true);              // Mostrar el modal
+            setNewNoteTitle(noteToEdit.title);
+            setNewNoteText(noteToEdit.text);
+            setEditingNoteId(id);
+            setModalVisible(true);
         }
     };
 
     const addOrEditNote = () => {
         if (newNoteTitle.trim() && newNoteText.trim()) {
             if (editingNoteId) {
-                // Editar nota existente
                 setNotes((prevNotes) =>
                     prevNotes.map(note =>
                         note.id === editingNoteId
@@ -45,7 +47,6 @@ const Notas = ({ navigation }) => {
                     )
                 );
             } else {
-                // Agregar nueva nota
                 const newNote = {
                     id: Date.now().toString(),
                     title: newNoteTitle,
@@ -53,52 +54,72 @@ const Notas = ({ navigation }) => {
                 };
                 setNotes((prevNotes) => [...prevNotes, newNote]);
             }
-            // Limpiar el formulario y cerrar el modal
             setNewNoteTitle('');
             setNewNoteText('');
-            setEditingNoteId(null);  // Limpiar el estado de edición
+            setEditingNoteId(null);
             setModalVisible(false);
         } else {
             Alert.alert('Error', 'Por favor ingresa título y contenido para la nota.');
         }
     };
 
-    const renderNote = ({ item }) => (
-        <View style={styles.note}>
-            <Text style={styles.noteTitle}>{item.title}</Text>
-            <Text style={styles.noteText}>{item.text}</Text>
-            <View style={styles.noteActions}>
-                <TouchableOpacity onPress={() => editNote(item.id)}>
-                    <Image source={editIcon} style={styles.icon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteNote(item.id)}>
-                    <Image source={deleteIcon} style={styles.icon} />
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
+    // Función para agregar o quitar una nota de favoritas
+    const toggleFavorite = (id) => {
+        setFavoriteNotes((prevFavs) => {
+            if (prevFavs.includes(id)) {
+                // Si la nota ya es favorita, la quitamos del array
+                const updatedFavs = prevFavs.filter(noteId => noteId !== id);
+                console.log("Favoritos:", updatedFavs);
+                return updatedFavs;
+            } else {
+                // Si no es favorita, la agregamos al array
+                const updatedFavs = [...prevFavs, id];
+                console.log("Favoritos:", updatedFavs);
+                return updatedFavs;
+            }
+        });
+    };
 
-    // Función para controlar la animación del menú desplegable
+    const renderNote = ({ item }) => {
+        const isFavorite = favoriteNotes.includes(item.id);  // Verificar si la nota es favorita
+        return (
+            <View style={styles.note}>
+                <Text style={styles.noteTitle}>{item.title}</Text>
+                <Text style={styles.noteText}>{item.text}</Text>
+                <View style={styles.noteActions}>
+                    <TouchableOpacity onPress={() => editNote(item.id)}>
+                        <Image source={editIcon} style={styles.icon} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => deleteNote(item.id)}>
+                        <Image source={deleteIcon} style={styles.icon} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => toggleFavorite(item.id)}>
+                        {/* Cambiar ícono según si es favorito o no */}
+                        <Image source={isFavorite ? favAdd : favNoAdd} style={styles.icon} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    };
+
     const toggleMenu = () => {
         Animated.timing(slideAnim, {
-            toValue: menuVisible ? -100 : 0,  // Desplegar o esconder el menú
+            toValue: menuVisible ? -100 : 0,
             duration: 300,
             easing: Easing.ease,
             useNativeDriver: true,
         }).start();
-        setMenuVisible(!menuVisible);  // Cambiar estado del menú
+        setMenuVisible(!menuVisible);
     };
 
     return (
         <ImageBackground source={fondo2} style={styles.background}>
             <View style={styles.container}>
 
-                {/* Botón de despliegue */}
                 <TouchableOpacity onPress={toggleMenu} style={styles.deployContainer}>
                     <Image source={deploy} style={styles.deployIcon} />
                 </TouchableOpacity>
 
-                {/* Menú Desplegable - Solo visible cuando se toca la flecha */}
                 {menuVisible && (
                     <Animated.View style={[styles.menu, { transform: [{ translateX: slideAnim }] }]}>
                         <CustomButton
@@ -130,44 +151,51 @@ const Notas = ({ navigation }) => {
                 <Text style={styles.fixedDailyDiaries}>DAILY DIARIES</Text>
             </View>
 
-            {/* Modal para agregar o editar una nota */}
             <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalTitle}>
-                            {editingNoteId ? 'Editar nota' : 'Agregar nueva nota'}
-                        </Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Título de la nota"
-                            value={newNoteTitle}
-                            onChangeText={setNewNoteTitle}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Texto de la nota"
-                            value={newNoteText}
-                            onChangeText={setNewNoteText}
-                            multiline={true}
-                        />
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.fullScreenModalContainer}>
+                        <View style={styles.fullScreenModalView}>
 
                         <View style={styles.modalButtons}>
-                            <CustomButton onPress={addOrEditNote} text={editingNoteId ? "Guardar cambios" : "Guardar"} bgColor="#faae97" />
-                            <CustomButton onPress={() => setModalVisible(false)} text="Cancelar" bgColor='#faae97' />
+                                <TouchableOpacity
+                                    style={styles.customButton}
+                                    onPress={addOrEditNote}
+                                >
+                                    <Text style={styles.customButtonText}>Guardar</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.customButton1}
+                                    onPress={() => setModalVisible(false)}
+                                >
+                                    <Text style={styles.customButtonText}>❌</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <TextInput
+                                style={styles.customTitleInputFullScreen}
+                                placeholder="Título de la nota"
+                                value={newNoteTitle}
+                                onChangeText={setNewNoteTitle}
+                            />
+                            <TextInput
+                                style={styles.customDescriptionInputFullScreen}
+                                placeholder="Descripción"
+                                value={newNoteText}
+                                onChangeText={setNewNoteText}
+                                multiline={true}
+                            />
+
+                           
                         </View>
                     </View>
-                </View>
-            </Modal>
+                </Modal>
 
-            {/* Navbar con ícono de carpeta y botón para agregar nota */}
             <View style={styles.navbar}>
-
-            <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
+                <TouchableOpacity onPress={() => navigation.navigate('carpetas')}>
                     <Image source={fileICon} style={styles.navIcon1} />
                 </TouchableOpacity>
 
@@ -311,35 +339,73 @@ const styles = StyleSheet.create({
         left: 0,
     },
 
-    modalContainer: {
+    // Modal actualizado para cubrir más de la pantalla
+    fullScreenModalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo oscuro semitransparente
     },
-    modalView: {
-        width: '80%',
-        backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 20,
-        alignItems: 'center',
+    fullScreenModalView: {
+        height: '86%',  // Ocupa el 95% de la pantalla
+        width: '95%',   // Ancho casi total de la pantalla
+        backgroundColor: '#FFCFC7', // Color suave como en la imagen
+        borderRadius: 20,
+        padding: 30,
+        justifyContent: 'center',
     },
-    modalTitle: {
+    customTitleInputFullScreen: {
+        width: '100%',
+        fontSize: 24, // Título más grande
+        color: 'white',
+        fontWeight: 'bold',
+        borderBottomWidth: 1,
+        borderBottomColor: 'white',
+        marginBottom: 20,
+        padding: 10,
+    },
+    customDescriptionInputFullScreen: {
+        width: '100%',
+        height: '75%', // Aumentamos la altura para más espacio de texto
+        color: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: 'white',
+        padding: 10,
+        marginBottom: -15,
+        fontSize: 18, // Texto de descripción más grande
+    },
+    customButton: {
+        backgroundColor: '#faae97', 
+        borderColor: 'white',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        marginLeft: 15,
+        marginTop: 50,
+    },
+
+    customButton1: {
+        backgroundColor: 'transparent',
+        borderColor: 'white',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        marginLeft: 15,
+        marginTop: 50,
+    },
+
+    customButtonText: {
+        color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    input: {
-        width: '100%',
-        borderBottomWidth: 1,
-        borderBottomColor: 'gray',
-        marginBottom: 15,
-        padding: 10,
+        fontFamily: 'Garet',
     },
     modalButtons: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         width: '100%',
+        marginTop: -130,
+        marginBottom: 20,
+        marginLeft: 130,
     },
 });
 

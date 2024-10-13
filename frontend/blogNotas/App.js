@@ -5,6 +5,7 @@ import Register from './screens/register/register';
 import ForgotPassword from './screens/ForgotPassword/ForgotPassword'; 
 import ResetPassword from './screens/ResetPassword/resetPassword';
 import Notas from './screens/notas/notas';
+import Carpetas from './screens/Carpetas/carpetas';
 
 const App = () => { 
   return (
@@ -14,6 +15,8 @@ const App = () => {
     {/* <ForgotPassword /> */}
     <Notas />
     {/* <ResetPassword /> */}
+    {/* <Carpetas /> */}
+
     </SafeAreaView> 
   );
 }
