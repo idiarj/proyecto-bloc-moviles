@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, FlatList, Alert, Image, TextInput, Modal, Animated, Easing } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, FlatList, Alert, Image, TextInput, Modal, Animated, Easing, StyleSheet } from 'react-native';
 import CustomButton from '../../components/Button/CustomButton';  
 import fondo2 from '../../assets/fondo2.jpg'; 
 import editIcon from '../../assets/lapiz.png';
@@ -11,11 +11,13 @@ import fileICon from '../../assets/file.png';
 import favoriteICon from '../../assets/star.png';
 import favAdd from '../../assets/favAgregado.png';
 import favNoAdd from '../../assets/favSinAgregar.png';
+import { Picker } from '@react-native-picker/picker';
 
 const Notas = ({ navigation }) => {
     const [notes, setNotes] = useState([]);
     const [newNoteTitle, setNewNoteTitle] = useState('');
     const [newNoteText, setNewNoteText] = useState('');
+    const [newNoteCategory, setNewNoteCategory] = useState('neutral');
     const [modalVisible, setModalVisible] = useState(false);
     const [editingNoteId, setEditingNoteId] = useState(null);
     const [menuVisible, setMenuVisible] = useState(false);
@@ -31,6 +33,7 @@ const Notas = ({ navigation }) => {
         if (noteToEdit) {
             setNewNoteTitle(noteToEdit.title);
             setNewNoteText(noteToEdit.text);
+            setNewNoteCategory(noteToEdit.category);
             setEditingNoteId(id);
             setModalVisible(true);
         }
@@ -42,7 +45,7 @@ const Notas = ({ navigation }) => {
                 setNotes((prevNotes) =>
                     prevNotes.map(note =>
                         note.id === editingNoteId
-                            ? { ...note, title: newNoteTitle, text: newNoteText }
+                            ? { ...note, title: newNoteTitle, text: newNoteText, category: newNoteCategory }
                             : note
                     )
                 );
@@ -51,11 +54,13 @@ const Notas = ({ navigation }) => {
                     id: Date.now().toString(),
                     title: newNoteTitle,
                     text: newNoteText,
+                    category: newNoteCategory,
                 };
                 setNotes((prevNotes) => [...prevNotes, newNote]);
             }
             setNewNoteTitle('');
             setNewNoteText('');
+            setNewNoteCategory('neutral');
             setEditingNoteId(null);
             setModalVisible(false);
         } else {
@@ -63,29 +68,23 @@ const Notas = ({ navigation }) => {
         }
     };
 
-    // Función para agregar o quitar una nota de favoritas
     const toggleFavorite = (id) => {
         setFavoriteNotes((prevFavs) => {
             if (prevFavs.includes(id)) {
-                // Si la nota ya es favorita, la quitamos del array
-                const updatedFavs = prevFavs.filter(noteId => noteId !== id);
-                console.log("Favoritos:", updatedFavs);
-                return updatedFavs;
+                return prevFavs.filter(noteId => noteId !== id);
             } else {
-                // Si no es favorita, la agregamos al array
-                const updatedFavs = [...prevFavs, id];
-                console.log("Favoritos:", updatedFavs);
-                return updatedFavs;
+                return [...prevFavs, id];
             }
         });
     };
 
     const renderNote = ({ item }) => {
-        const isFavorite = favoriteNotes.includes(item.id);  // Verificar si la nota es favorita
+        const isFavorite = favoriteNotes.includes(item.id);
         return (
             <View style={styles.note}>
                 <Text style={styles.noteTitle}>{item.title}</Text>
                 <Text style={styles.noteText}>{item.text}</Text>
+                <Text style={styles.noteCategory}>Categoría: {item.category}</Text>
                 <View style={styles.noteActions}>
                     <TouchableOpacity onPress={() => editNote(item.id)}>
                         <Image source={editIcon} style={styles.icon} />
@@ -94,7 +93,6 @@ const Notas = ({ navigation }) => {
                         <Image source={deleteIcon} style={styles.icon} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => toggleFavorite(item.id)}>
-                        {/* Cambiar ícono según si es favorito o no */}
                         <Image source={isFavorite ? favAdd : favNoAdd} style={styles.icon} />
                     </TouchableOpacity>
                 </View>
@@ -115,7 +113,6 @@ const Notas = ({ navigation }) => {
     return (
         <ImageBackground source={fondo2} style={styles.background}>
             <View style={styles.container}>
-
                 <TouchableOpacity onPress={toggleMenu} style={styles.deployContainer}>
                     <Image source={deploy} style={styles.deployIcon} />
                 </TouchableOpacity>
@@ -152,47 +149,55 @@ const Notas = ({ navigation }) => {
             </View>
 
             <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => setModalVisible(false)}
-                >
-                    <View style={styles.fullScreenModalContainer}>
-                        <View style={styles.fullScreenModalView}>
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.fullScreenModalContainer}>
+                    <View style={styles.fullScreenModalView}>
 
                         <View style={styles.modalButtons}>
-                                <TouchableOpacity
-                                    style={styles.customButton}
-                                    onPress={addOrEditNote}
-                                >
-                                    <Text style={styles.customButtonText}>Guardar</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.customButton1}
-                                    onPress={() => setModalVisible(false)}
-                                >
-                                    <Text style={styles.customButtonText}>❌</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                            <TextInput
-                                style={styles.customTitleInputFullScreen}
-                                placeholder="Título de la nota"
-                                value={newNoteTitle}
-                                onChangeText={setNewNoteTitle}
-                            />
-                            <TextInput
-                                style={styles.customDescriptionInputFullScreen}
-                                placeholder="Descripción"
-                                value={newNoteText}
-                                onChangeText={setNewNoteText}
-                                multiline={true}
-                            />
-
-                           
+                            <TouchableOpacity
+                                style={styles.customButton}
+                                onPress={addOrEditNote}
+                            >
+                                <Text style={styles.customButtonText}>Guardar</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.customButton1}
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Text style={styles.customButtonText}>❌</Text>
+                            </TouchableOpacity>
                         </View>
+                        <TextInput
+                            style={styles.customTitleInputFullScreen}
+                            placeholder="Título de la nota"
+                            value={newNoteTitle}
+                            onChangeText={setNewNoteTitle}
+                        />
+                        <TextInput
+                            style={styles.customDescriptionInputFullScreen}
+                            placeholder="Descripción"
+                            value={newNoteText}
+                            onChangeText={setNewNoteText}
+                            multiline={true}
+                        />
+
+                        <Picker
+                            selectedValue={newNoteCategory} 
+                            style={{ height: 50, width: '100%', color: 'white' }}
+                            onValueChange={(itemValue) => setNewNoteCategory(itemValue)}
+                        >
+                            <Picker.Item label="Relevante" value="relevante" />
+                            <Picker.Item label="Neutral" value="neutral" />
+                            <Picker.Item label="Irrelevante" value="irrelevante" />
+                        </Picker>
+
                     </View>
-                </Modal>
+                </View>
+            </Modal>
 
             <View style={styles.navbar}>
                 <TouchableOpacity onPress={() => navigation.navigate('carpetas')}>
@@ -248,11 +253,18 @@ const styles = StyleSheet.create({
     note: {
         backgroundColor: 'rgba(255,255,255,0.3)',
         padding: 20,
+        color: 'white',
         borderRadius: 10,
         marginBottom: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+    },
+
+    noteCategory: {
+        color: 'white', 
+        fontSize: 14,
+        marginVertical: 5, 
     },
     noteTitle: {
         fontSize: 18,
@@ -317,6 +329,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
+        height: 80,
         padding: 20,
         backgroundColor: 'rgba(255,255,255,0.5)',
         borderTopLeftRadius: 20,
@@ -366,7 +379,7 @@ const styles = StyleSheet.create({
     },
     customDescriptionInputFullScreen: {
         width: '100%',
-        height: '75%', // Aumentamos la altura para más espacio de texto
+        height: '55%', // Aumentamos la altura para más espacio de texto
         color: 'white',
         borderBottomWidth: 1,
         borderBottomColor: 'white',
