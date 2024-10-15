@@ -7,7 +7,7 @@ import ResetPassword from './screens/ResetPassword/resetPassword';
 import Notas from './screens/notas/notas';
 import Carpetas from './screens/Carpetas/carpetas';
 
-const App = () => { 
+const App = () => {  
   return (
    <SafeAreaView style={styles.root}>
     {/* <Login /> */}
