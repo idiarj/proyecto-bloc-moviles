@@ -3,11 +3,11 @@ POST http://localhost:3000/user/register
 Content-Type: application/json
 
 {
-    "nombre": "Idiar",
-    "apellido": "Chacin",
-    "username": "Idiarj",
-    "correo": "idiar16@gmail.com",
-    "password": "16012004"
+    "nombre": "Victoria",
+    "apellido": "Acosta",
+    "username": "Arenitaa",
+    "correo": "rubialoca2003@gmail.com",
+    "password": "messi2003"
 }
 
 ### Logear un usuario

@@ -7,7 +7,7 @@ export class Validation{
             try{
                 return await this.schema.safeParseAsync(obj)
             }catch(err){
-                return {error: err}
+                throw err;
             }
     }
 
@@ -15,7 +15,7 @@ export class Validation{
         try{
             return await this.schema.partial().safeParseAsync(obj)
         }catch(err){
-            return {error: err}
+            throw err;
         }
     }
 }

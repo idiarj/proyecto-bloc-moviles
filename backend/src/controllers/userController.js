@@ -10,34 +10,11 @@ export class UserController{
     static async registerControlPost(req, res){
         console.log(`----- REGISTER CONTROLLER ----------`)
 
-        const result = await registerValidation.validateTotal(req.body);
 
-
-        if(result.error) {
-
-
-            const [{message}] = result.error.issues
-            return res.status(406).json({error: message})
-
-        }
-
-        const usernameCli = result.data['username']
-        console.log(`usernameCLi ${usernameCli}`)
-        const validUser = await userModel.verifyUser({user: usernameCli});
-        console.log('validUser es', validUser)
-        if(validUser.success){
-            const [{username}] = validUser.resultSet
-            const userFromModel = typeof username === 'string' ? username.toLowerCase() : null;
-            console.log(`userFromModel ${userFromModel}, usernameCli ${usernameCli.toLowerCase()}, son iguales? ${(userFromModel === usernameCli.toLowerCase())} `)
-            if(userFromModel === usernameCli.toLowerCase()) {
-                return res.status(400).json({
-                    error: "El usuario que estás intentando registrar ya existe."
-                });
-            }
-        }
 
         try {
             console.log('entre en el trycatch del controller')
+            const result = await registerValidation.validateTotal(req.body);
             const registerResult = await userModel.registerUser(result.data);
             console.log(registerResult)
            
