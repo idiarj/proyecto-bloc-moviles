@@ -9,13 +9,14 @@ CREATE  TABLE "public".categoria (
 CREATE  TABLE "public".persona ( 
 	id_persona           serial  NOT NULL  ,
 	nom_persona          varchar  NOT NULL  ,
-	apellido_perso       integer    ,
+	apellido_perso       varchar    ,
 	CONSTRAINT pk_persona PRIMARY KEY ( id_persona )
  );
 
 CREATE  TABLE "public".usuario ( 
 	id_usuario           serial  NOT NULL  ,
 	nom_usu              varchar  NOT NULL  ,
+	contra_usu           varchar  NOT NULL  ,
 	correo_usu           varchar    ,
 	id_persona           serial    ,
 	CONSTRAINT pk_usuario PRIMARY KEY ( id_usuario )
@@ -25,6 +26,7 @@ CREATE  TABLE "public".notas (
 	id_nota              serial  NOT NULL  ,
 	titu_nota            varchar    ,
 	conte_nota           varchar  NOT NULL  ,
+	favorito             boolean    ,
 	id_usuario           serial    ,
 	id_categoria         serial    ,
 	CONSTRAINT pk_notas PRIMARY KEY ( id_nota )
