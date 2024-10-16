@@ -33,7 +33,7 @@ const Register = () => {
             <View style={styles.container}>
 
                 <Text style={styles.title}>DAILY DIARIES</Text>
-                <Text style={styles.subTitle}>Registro</Text>
+                <Text style={styles.subTitle}>Registro Paso 1</Text>
 
                 <CustomInput
                     value={nombre} 
@@ -95,7 +95,8 @@ const styles = StyleSheet.create({
         fontSize: 40,
         alignSelf: 'center',
         fontFamily: 'Garet',
-        marginBottom: 40,
+        marginBottom: 30,
+        marginTop: 50,
     },
     subTitle: {
         color: 'white',

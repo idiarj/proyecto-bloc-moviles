@@ -23,7 +23,7 @@ const ResetPassword = () => {
                     <Text style={styles.subTitle}>Cambio de Contraseña</Text>
                    <View style={{...styles.container, width: "100%"}}>
                     <CustomInput
-                        placeholder="Ingrese el codigo"
+                        placeholder="Ingrese la respuesta de recuperación"
                         value={code}
                         setvalue={setCode}
                     />
@@ -70,10 +70,9 @@ const styles = StyleSheet.create({
     },
     container: {
         justifyContent: 'center',
-        backgroundColor: 'rgba(0,0,0,0.2)',
-        padding: 20,
+        padding: 15,
         borderRadius: 10,
-        width: '100%',
+        width:200,
         alignItems: 'center',
     },
     text: {
