@@ -1,12 +1,11 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const index = () => {
+const Navigation = () => {
   return (
-    <View>
-      <Text>index</Text>
-    </View>
-  )
-}
-
-export default index
+    <NavigationContainer>
+      {/* Rest of your app code */}
+    </NavigationContainer>
+  );
+};
+export default Navigation

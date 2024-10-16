@@ -2,76 +2,83 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, FlatList, Alert, Image, TextInput, Modal, Animated, Easing } from 'react-native';
 import CustomButton from '../../components/Button/CustomButton';  
 import fondo2 from '../../assets/fondo2.jpg'; 
-import editIcon from '../../assets/lapiz.png';
-import deleteIcon from '../../assets/eliminar2.png';
 import addIcon from '../../assets/agregar.png';
-import deploy from '../../assets/flechaMenu.png';
-import folderIcon from '../../assets/folderb.png'; 
-import favoriteICon from '../../assets/star.png';
+import folderIcon from '../../assets/folderb.png'; // Folder icon
 import fileICon from '../../assets/file.png';
-
+import favoriteICon from '../../assets/star.png';
+import deploy from '../../assets/flechaMenu.png';
+import deleteIcon from '../../assets/eliminar2.png';
 
 const Carpetas = ({ navigation }) => {
-    const [folders, setFolders] = useState([]); // Cambia 'notes' por 'folders'
-    const [newFolderName, setNewFolderName] = useState(''); // Para el nombre de la carpeta
-    const [modalVisible, setModalVisible] = useState(false);
-    const [editingFolderId, setEditingFolderId] = useState(null); // Para editar carpetas
-    const [menuVisible, setMenuVisible] = useState(false);  
+    const [folders, setFolders] = useState([]); // Folder state
+    const [selectedFolder, setSelectedFolder] = useState(null); // To open folder
+    const [newFolderName, setNewFolderName] = useState(''); // New folder name state
+    const [newNoteName, setNewNoteName] = useState(''); // New note name state
+    const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
+    const [menuVisible, setMenuVisible] = useState(false);  // For sliding menu
     const slideAnim = useRef(new Animated.Value(-100)).current;
 
-    const deleteFolder = (id) => {
-        setFolders((prevFolders) => prevFolders.filter(folder => folder.id !== id));
-    };
-
-    const editFolder = (id) => {
-        const folderToEdit = folders.find(folder => folder.id === id);
-        if (folderToEdit) {
-            setNewFolderName(folderToEdit.name); // Cargar el nombre de la carpeta
-            setEditingFolderId(id);               // Guardar el ID de la carpeta en edición
-            setModalVisible(true);              // Mostrar el modal
-        }
-    };
-
-    const addOrEditFolder = () => {
+    // Add new folder
+    const addFolder = () => {
         if (newFolderName.trim()) {
-            if (editingFolderId) {
-                // Editar carpeta existente
-                setFolders((prevFolders) =>
-                    prevFolders.map(folder =>
-                        folder.id === editingFolderId
-                            ? { ...folder, name: newFolderName }
-                            : folder
-                    )
-                );
-            } else {
-                // Agregar nueva carpeta
-                const newFolder = {
-                    id: Date.now().toString(),
-                    name: newFolderName,
-                };
-                setFolders((prevFolders) => [...prevFolders, newFolder]);
-            }
-            // Limpiar el formulario y cerrar el modal
-            setNewFolderName('');
-            setEditingFolderId(null);
-            setModalVisible(false);
+            const newFolder = {
+                id: Date.now().toString(),
+                name: newFolderName,
+                notes: [], // Empty notes array inside each folder
+            };
+            setFolders((prevFolders) => [...prevFolders, newFolder]);
+            setNewFolderName(''); // Reset the input
+            setModalVisible(false); // Close the modal
         } else {
-            Alert.alert('Error', 'Por favor ingresa un nombre para la carpeta.');
+            Alert.alert('Error', 'Please enter a folder name.');
         }
+    };
+
+    // Add new note to the selected folder
+    const addNote = (folderId) => {
+        if (newNoteName.trim()) {
+            setFolders((prevFolders) =>
+                prevFolders.map(folder =>
+                    folder.id === folderId
+                        ? { ...folder, notes: [...folder.notes, newNoteName] }
+                        : folder
+                )
+            );
+            setNewNoteName('');
+        } else {
+            Alert.alert('Error', 'Please enter a note name.');
+        }
+    };
+
+    // Open/close folder to display notes
+    const toggleFolder = (folder) => {
+        setSelectedFolder(selectedFolder?.id === folder.id ? null : folder);
     };
 
     const renderFolder = ({ item }) => (
-        <View style={styles.folder}>
-            <Image source={folderIcon} style={styles.folderIcon} />
-            <Text style={styles.folderName}>{item.name}</Text>
-            <View style={styles.folderActions}>
-                <TouchableOpacity onPress={() => editFolder(item.id)}>
-                    <Image source={editIcon} style={styles.icon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteFolder(item.id)}>
-                    <Image source={deleteIcon} style={styles.icon} />
-                </TouchableOpacity>
-            </View>
+        <View style={styles.folderContainer}>
+            <TouchableOpacity style={styles.folder} onPress={() => toggleFolder(item)}>
+                <Image source={folderIcon} style={styles.folderIcon} />
+                <Text style={styles.folderName}>{item.name}</Text>
+            </TouchableOpacity>
+            {/* If the folder is selected, show its notes and "Add Note" option */}
+            {selectedFolder?.id === item.id && (
+                <View style={styles.notesContainer}>
+                    <FlatList
+                        data={item.notes}
+                        renderItem={({ item }) => <Text style={styles.noteItem}>{item}</Text>}
+                        keyExtractor={(note, index) => index.toString()}
+                        style={styles.noteList}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="New Note"
+                        value={newNoteName}
+                        onChangeText={setNewNoteName}
+                    />
+                    <CustomButton onPress={() => addNote(item.id)} text="Add Note" bgColor="#faae97" />
+                </View>
+            )}
         </View>
     );
 
@@ -92,37 +99,30 @@ const Carpetas = ({ navigation }) => {
                     <Image source={deploy} style={styles.deployIcon} />
                 </TouchableOpacity>
 
+                {/* Sliding Menu */}
                 {menuVisible && (
                     <Animated.View style={[styles.menu, { transform: [{ translateX: slideAnim }] }]}>
-                        <CustomButton
-                            onPress={() => Alert.alert('Cerrar sesión')}
-                            text="CERRAR SESIÓN"
-                            bgColor="#faae97"
-                        />
-                        <CustomButton
-                            onPress={() => Alert.alert('Borrar cuenta')}
-                            text="BORRAR CUENTA"
-                            bgColor="#faae97"
-                        />
+                        <CustomButton onPress={() => Alert.alert('Cerrar sesión')} text="CERRAR SESIÓN" bgColor="#faae97" />
+                        <CustomButton onPress={() => Alert.alert('Borrar cuenta')} text="BORRAR CUENTA" bgColor="#faae97" />
                     </Animated.View>
                 )}
 
-                <Text style={styles.title}>BIENVENIDO A TUS CARPETAS</Text>
+                <Text style={styles.title}>Tus carpetas</Text>
 
                 {folders.length > 0 ? (
                     <FlatList
                         data={folders}
-                        renderItem={renderFolder} // Renderizar carpetas
+                        renderItem={renderFolder}
                         keyExtractor={item => item.id}
                         style={styles.folderList}
                     />
                 ) : (
-                    <Text style={styles.noFoldersText}>No tienes carpetas aún. ¡Agrega una!</Text>
+                    <Text style={styles.noFoldersText}>No hay carpetas todavia. Agrega una!</Text>
                 )}
 
-                <Text style={styles.fixedDailyDiaries}>DAILY DIARIES</Text>
+                    <Text style={styles.fixedDailyDiaries}>DAILY DIARIES</Text>
+                
             </View>
-
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -131,47 +131,40 @@ const Carpetas = ({ navigation }) => {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalTitle}>
-                            {editingFolderId ? 'Editar carpeta' : 'Agregar nueva carpeta'}
-                        </Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Nombre de la carpeta"
                             value={newFolderName}
                             onChangeText={setNewFolderName}
                         />
-
-                        <View style={styles.modalButtons}>
-                            <CustomButton onPress={addOrEditFolder} text={editingFolderId ? "Guardar cambios" : "Guardar"} bgColor="#faae97" />
-                            <CustomButton onPress={() => setModalVisible(false)} text="Cancelar" bgColor='#faae97' />
-                        </View>
+                        <CustomButton onPress={addFolder} text="Add Folder" bgColor="#faae97" />
+                        <CustomButton onPress={() => setModalVisible(false)} text="Cancel" bgColor='#faae97' />
                     </View>
                 </View>
             </Modal>
             <View style={styles.navbar}>
+                    <TouchableOpacity onPress={() => navigation.navigate('carpetas')}>
+                        <Image source={fileICon} style={styles.navIcon1} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
-                    <Image source={fileICon} style={styles.navIcon1} />
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
+                        <Image source={folderIcon} style={styles.navIcon} />
+                    </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
-                    <Image source={folderIcon} style={styles.navIcon} />
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
+                        <Image source={favoriteICon} style={styles.navIcon2} />
+                    </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
-                    <Image source={favoriteICon} style={styles.navIcon2} />
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addButton}>
-                    <Image source={addIcon} style={styles.addIcon} />
-                </TouchableOpacity>
-            </View>
+                    {/* Button for adding folders inside the navbar */}
+                    <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addButton}>
+                        <Image source={addIcon} style={styles.addIcon} />
+                    </TouchableOpacity>
+                </View>
         </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
-    // Resto de los estilos
     background: {
         flex: 1,
         justifyContent: 'center',
@@ -187,66 +180,30 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 25,
         fontWeight: 'bold',
-        marginVertical: 30, 
-        marginTop: 100,
+        marginVertical: 30,
     },
-    
-    deployContainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        padding: 10,
-        marginTop: 15,
-    },
-    deployIcon: {
-        width: 40,
-        height: 40,
-    },
-    
-    navbar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+    folderList: {
+        flex: 1,
         width: '100%',
-        padding: 20,
-        backgroundColor: 'rgba(255,255,255,0.5)',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
     },
     noFoldersText: {
         color: 'white',
         fontSize: 18,
         marginBottom: 60,
         textAlign: 'center',
-        marginTop: 5,
     },
-    folderList: {
-        flex: 1,
-        width: '100%',
+    folderContainer: {
+        marginBottom: 20,
     },
     folder: {
         backgroundColor: 'rgba(255,255,255,0.3)',
         padding: 20,
         borderRadius: 10,
-        marginBottom: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        justifyContent: 'space-between',
     },
-    folderName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: 'white',
-    },
-    folderActions: {
-        flexDirection: 'row',
-    },
-    icon: {
-        width: 25,
-        height: 25,
-        marginLeft: 10,
-    },
-    fixedDailyDiaries: {
+     fixedDailyDiaries: {
         position: 'absolute',
         bottom: 200, 
         marginTop: 20,
@@ -255,18 +212,41 @@ const styles = StyleSheet.create({
         fontSize: 35,
         opacity: 0.3,
     },
+    folderIcon: {
+        width: 50,
+        height: 50,
+    },
+    folderName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+    notesContainer: {
+        marginTop: 10,
+        paddingHorizontal: 20,
+    },
+    noteItem: {
+        color: 'white',
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    input: {
+        width: '100%',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        marginBottom: 10,
+        padding: 10,
+        color: 'white',
+    },
     addButton: {
-        backgroundColor: '#fff',
+         backgroundColor: '#fff',
         borderRadius: 50,
         padding: 10,
+        marginLeft: 10, 
     },
     addIcon: {
         width: 40,
         height: 40,
-    },
-    folderIcon: {
-        width: 50,
-        height: 50,
     },
     modalContainer: {
         flex: 1,
@@ -280,29 +260,23 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         alignItems: 'center',
-    },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    input: {
-        width: '100%',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        marginBottom: 20,
-        padding: 10,
-    },
-    modalButtons: {
+        
+    },  navbar: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         width: '100%',
+        height: 80,
+        padding: 20,
+        backgroundColor: '#ffc9b9',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     navIcon: {
         width: 50,
         height: 50,
     },
-
+  
     navIcon1: {
         width: 50,
         height: 50,
@@ -313,6 +287,26 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         left: 0,
+    },
+
+    deployContainer: {
+        position: 'absolute',
+        top: 20,
+        left: 10,
+    },
+    deployIcon: {
+        width: 40,
+        height: 40,
+    },
+    menu: {
+        position: 'absolute',
+        top: 70,
+        left: 0,
+        width: 230,
+        backgroundColor: '#fff',
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        padding: 10,
     },
 });
 
