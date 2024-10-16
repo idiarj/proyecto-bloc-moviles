@@ -63,13 +63,9 @@ export class PgHandler{
 
         } catch (error) {
 
-            console.log(error)
-            return { error }
+            // console.log(error)
+            throw error;
 
-        }finally{
-            if(!isClientProvided){
-                await this.releaseConn(client)
-            }
         }
     }
     
