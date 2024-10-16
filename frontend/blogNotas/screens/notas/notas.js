@@ -117,20 +117,14 @@ const Notas = ({ navigation }) => {
                     <Image source={deploy} style={styles.deployIcon} />
                 </TouchableOpacity>
 
+                {/* Sliding Menu */}
                 {menuVisible && (
                     <Animated.View style={[styles.menu, { transform: [{ translateX: slideAnim }] }]}>
-                        <CustomButton
-                            onPress={() => Alert.alert('Cerrar sesión')}
-                            text="CERRAR SESIÓN"
-                            bgColor="#faae97"
-                        />
-                        <CustomButton
-                            onPress={() => Alert.alert('Borrar cuenta')}
-                            text="BORRAR CUENTA"
-                            bgColor="#faae97"
-                        />
+                        <CustomButton onPress={() => Alert.alert('Cerrar sesión')} text="CERRAR SESIÓN" bgColor="#faae97" />
+                        <CustomButton onPress={() => Alert.alert('Borrar cuenta')} text="BORRAR CUENTA" bgColor="#faae97" />
                     </Animated.View>
                 )}
+
 
                 <Text style={styles.title}>BIENVENIDO A TUS NOTAS</Text>
 
@@ -305,10 +299,8 @@ const styles = StyleSheet.create({
     },
     deployContainer: {
         position: 'absolute',
-        top: 0,
-        left: 0,
-        padding: 10,
-        marginTop: 15,
+        top: 20,
+        left: 10,
     },
     deployIcon: {
         width: 40,
@@ -316,13 +308,13 @@ const styles = StyleSheet.create({
     },
     menu: {
         position: 'absolute',
-        top: 20,
+        top: 70,
         left: 0,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 10,
+        width: 230,
+        backgroundColor: '#fff',
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
         padding: 10,
-        zIndex: 1,
-        elevation: 5,
     },
     navbar: {
         flexDirection: 'row',
@@ -331,7 +323,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 80,
         padding: 20,
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: '#ffc9b9',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },

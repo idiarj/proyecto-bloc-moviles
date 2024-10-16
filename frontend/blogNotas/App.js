@@ -6,15 +6,19 @@ import ForgotPassword from './screens/ForgotPassword/ForgotPassword';
 import ResetPassword from './screens/ResetPassword/resetPassword';
 import Notas from './screens/notas/notas';
 import Carpetas from './screens/Carpetas/carpetas';
+import Favoritos from './screens/Favoritos/favoritos';
+import Navigation from './navigation';
 
 const App = () => {  
   return (
    <SafeAreaView style={styles.root}>
     {/* <Login /> */}
     {/* <Register/> */}
-    {/* <ForgotPassword /> */}
-    <Notas />
+    <ForgotPassword />
+    {/* <Notas /> */}
+    {/* <Favoritos /> */}
     {/* <ResetPassword /> */}
+    {/* <Navigation/> */}
     {/* <Carpetas /> */}
 
     </SafeAreaView> 
