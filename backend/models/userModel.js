@@ -1,5 +1,5 @@
 import { iPgHandler } from "../data/psql-data/iPgManager.js";
-import { CryptManager } from "../sub-sistemas/security/CryptManager.js";
+import { CryptManager } from "../utils/security/CryptManager.js";
 
 export class userModel{
 
@@ -65,8 +65,10 @@ export class userModel{
         } catch (error) {
             await iPgHandler.rollbackTransaction(client)
             console.log('error al insertar el usuario:', error);
-            client.release();
+            
             return { success: false, message: "Error al registrar el usuario", error };
+        }finally{
+            await iPgHandler.releaseConn(client)
         }
     }
 
