@@ -4,4 +4,5 @@ import { notesController } from '../../controllers/B.O Controllers/notesControll
 export const notesRouter = Router()
 
 notesRouter.get('/getNotes', notesController.getNotes)
-notesRouter.post('/createNote', notesController.createNote)
+notesRouter.post('/createNote', notesController.postNote)
+notesRouter.put('/updateNote/:noteId', notesController.putNote)

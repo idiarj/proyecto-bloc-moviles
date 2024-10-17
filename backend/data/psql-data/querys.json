@@ -7,5 +7,7 @@
     "findByEmail":"SELECT * FROM usuario WHERE correo_usu = $1",
     "select_personas": "SELECT * FROM persona",
     "getNotes": "SELECT * FROM nota WHERE id_usuario = $1",
-    "createNote": "INSERT INTO nota (titu_nota, conte_nota, id_usuario, id_categoria, favorito) VALUES ($1, $2, $3, $4, $5) RETURNING id_nota"
+    "createNote": "INSERT INTO nota (titu_nota, conte_nota, id_usuario, id_categoria, favorito) VALUES ($1, $2, $3, $4, $5) RETURNING id_nota",
+    "updateNote": "UPDATE nota SET titu_nota = $1, conte_nota = $2, id_categoria = $3, favorito = $4 WHERE id_nota = $5",
+   "verifyOwner": "SELECT id_usuario AS owner FROM nota WHERE id_nota = $1" 
 }

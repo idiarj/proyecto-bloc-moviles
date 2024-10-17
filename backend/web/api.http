@@ -33,6 +33,9 @@ Content-Type: application/json
     "categoria": 1
 }
 
+### Actualizar nota
+PUT http://localhost:3000/notes/updateNote/1
+
 ### VER USUARIO LOGEADO
 GET http://localhost:3000/user/login
 
