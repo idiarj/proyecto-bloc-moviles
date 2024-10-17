@@ -34,7 +34,19 @@ Content-Type: application/json
 }
 
 ### Actualizar nota
-PUT http://localhost:3000/notes/updateNote/1
+PUT http://localhost:3000/notes/updateNote/3
+Content-Type: application/json
+
+{
+    "titu_nota": "Ya no vamos a papear en Smite",
+    "conte_nota": "No papeamos en Smite con los panas",
+    "favorito": true,
+    "categoria": 1
+}
+
+### Eliminar nota
+DELETE http://localhost:3000/notes/deleteNote/3
+
 
 ### VER USUARIO LOGEADO
 GET http://localhost:3000/user/login

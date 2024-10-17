@@ -58,14 +58,40 @@ export class notesController{
                 return;
             }
 
-            const {noteTitle, noteContent, categoria, favorito} = req.body;
-            const validationResult = noteValidation.validatePartial({titu_nota, conte_nota, categoria, favorito});
-            const note = await notesModel.updateNote({noteId, noteTitle, noteContent, category, favorite});
+            const { titu_nota, conte_nota, categoria, favorito } = req.body;
+            await noteValidation.validatePartial({titu_nota, conte_nota, categoria, favorito});
+            const note = await notesModel.updateNote({userid, 
+                noteTitle : titu_nota, 
+                noteContent : conte_nota, 
+                category : categoria, 
+                favorite : favorito});
 
             res.status(200).json({nota: note, mensaje: 'Nota actualizada con exito'});
-            
+
         } catch (error) {
             res.status(500).json({success: false, message: `Error al actualizar la nota: ${error.message}`});
+        }
+    }
+
+    static async deleteNote(req, res){
+        try {
+            if(!SessionHandler.verifySession(req)){
+                res.status(401).json({error: 'Sesión no válida.'});
+                return;
+            }
+
+            const {noteId} = req.params;
+            const {userid} = req.session;
+
+            const verifyOwner = await notesModel.verifyNoteOwner({noteId, userId: userid});
+            if(!verifyOwner.success){
+                res.status(401).json({error: verifyOwner.message});
+                return;
+            }
+            const note = await notesModel.deleteNote({noteId});
+            res.status(200).json({nota: note, mensaje: 'Nota eliminada con exito'});
+        } catch (error) {
+            res.status(500).json({success: false, message: `Error al eliminar la nota: ${error.message}`});
         }
     }
 }

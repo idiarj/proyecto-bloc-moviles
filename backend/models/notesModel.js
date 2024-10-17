@@ -41,7 +41,8 @@ export class notesModel{
 
     static async deleteNote({noteId = null}){
         try {
-            
+            const deletedNote = await iPgHandler.exeQuery({key: 'deleteNote', params: [noteId]});
+            return {success: true, message: 'Nota eliminada exitosamente.'};
         } catch (error) {
             throw error;
         }
@@ -53,6 +54,7 @@ export class notesModel{
             if(result && result.length > 0){
                 const [{owner}] = result
                 if(owner === userId){
+                    console.log('eres el dueno')
                     return { success: true }
                 }else{
                     return { success: false, message: 'No eres el dueno de esta nota.' }
@@ -60,7 +62,6 @@ export class notesModel{
             }else{
                 return { success: false, message: 'No se ha encontrado la nota.' }
             }
-            return {success: true}
         } catch (error) {
             throw error;
         }
