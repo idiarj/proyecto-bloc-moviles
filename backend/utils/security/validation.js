@@ -11,7 +11,7 @@ export class Validation{
             }
     }
 
-    async validateUpate(obj){
+    async validatePartial(obj){
         try{
             return await this.schema.partial().safeParseAsync(obj)
         }catch(err){

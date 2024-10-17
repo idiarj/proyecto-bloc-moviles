@@ -51,6 +51,7 @@ export class userModel{
             console.log('entre en el try de user model registeruser')
             console.log(`insertando la persona ${nombre} ${apellido}`);
             const equalUsername = await this.verifyEqualUsernames({usernameCli: username})
+            console.log('equalUsername es', equalUsername)
             if(!equalUsername.success) return {success: false, message: equalUsername.error};
             const [{
                 id_persona
@@ -130,6 +131,8 @@ export class userModel{
                     }
                 }
             }
+
+            return {success: true}
         } catch (error) {
             throw error;
         }

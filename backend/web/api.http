@@ -3,11 +3,11 @@ POST http://localhost:3000/user/register
 Content-Type: application/json
 
 {
-    "nombre": "Victoria",
-    "apellido": "Acosta",
-    "username": "Arenitaa",
-    "correo": "rubialoca2003@gmail.com",
-    "password": "messi2003"
+    "nombre": "Mariana",
+    "apellido": "Vilchez",
+    "username": "Kerokero",
+    "correo": "mariavilchez@gmail.com",
+    "password": "mariana1803"
 }
 
 ### Logear un usuario
@@ -15,18 +15,31 @@ POST http://localhost:3000/user/login
 Content-Type: application/json
 
 {
-    "username": "Idiarj",
-    "password": "16012004"
+    "username": "Kerokero",
+    "password": "mariana1803"
+}
+
+### Ver notas del usuario logeado
+GET http://localhost:3000/notes/getNotes
+
+### Crear una nota
+POST http://localhost:3000/notes/createNote
+Content-Type: application/json
+
+{
+    "titu_nota": "Papear en Smite",
+    "conte_nota": "Papear en Smite con los panas",
+    "favorito": true,
+    "categoria": 1
 }
 
 ### VER USUARIO LOGEADO
 GET http://localhost:3000/user/login
 
-### LCerrar sesion
+### Cerrar sesion
 POST http://localhost:3000/user/logout
 
 ### Home
 GET http://localhost:3000/home
 
-### Crear una nota
-POST http://localhost:3000/notes/createNote
+

@@ -6,6 +6,6 @@
     "verifyPassword": "SELECT contra_usu as password FROM usuario WHERE nom_usu = $1",
     "findByEmail":"SELECT * FROM usuario WHERE correo_usu = $1",
     "select_personas": "SELECT * FROM persona",
-    "getNotes": "SELECT * FROM nota WHERE id_user = $1",
-    "createNote": "INSERT INTO nota (titu_nota, conte_nota, id_usuario, id_categoria, favorito) VALUES ($1, $2, $3) RETURNING id_nota"
+    "getNotes": "SELECT * FROM nota WHERE id_usuario = $1",
+    "createNote": "INSERT INTO nota (titu_nota, conte_nota, id_usuario, id_categoria, favorito) VALUES ($1, $2, $3, $4, $5) RETURNING id_nota"
 }

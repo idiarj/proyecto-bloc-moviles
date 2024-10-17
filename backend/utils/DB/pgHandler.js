@@ -57,13 +57,11 @@ export class PgHandler{
             console.log(`los parametros son ${params}`)
             
             const result = await client.query(query, params)
-            // console.log(result)
             console.log(result.rows)
             return result.rows
 
         } catch (error) {
 
-            // console.log(error)
             throw error;
 
         }

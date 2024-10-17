@@ -4,30 +4,40 @@ import { noteValidation } from "../../../data/iValidation/iValidation.js";
 
 export class notesController{
     static async getNotes(req, res){
-        if(!SessionHandler.verifySession(req)){
-            res.status(401).json({success: false, message: 'Sesión no válida.'});
-            return;
+        try {
+            if(!SessionHandler.verifySession(req)){
+                res.status(401).json({error: 'Sesión no válida.'});
+            }
+            const {userid} = req.session;
+            const {notes} = await notesModel.getNotes({userId: userid});
+            console.log(notes)
+            res.status(200).json({notas: notes, mensaje: 'Notas obtenidas con exito'});
+        } catch (error) {
+            res.status(500).json({success: false, message: `Error al obtener las notas: ${error.message}`});
         }
-
-        const {userId} = req.body;
-        const notes = await notesModel.getNotes({userId});
-        res.json(notes);
     }
 
     static async createNote(req, res){
-        if(!SessionHandler.verifySession(req)){
-            res.status(401).json({success: false, message: 'Sesión no válida.'});
-            return;
+        try {
+            if(!SessionHandler.verifySession(req)){
+                res.status(401).json({error: 'Sesión no válida.'});
+                return;
+            }
+            const { titu_nota, conte_nota, categoria, favorito } = req.body;
+            console.log(req.session)
+            const {userid} = req.session;
+    
+            console.log(req.body)
+            console.log(titu_nota, conte_nota, categoria, favorito)
+            const noteValidationResult = noteValidation.validateTotal({titu_nota, conte_nota, categoria, favorito})
+            const note = await notesModel.createNote({userid, 
+                                                    noteTitle : titu_nota, 
+                                                    noteContent : conte_nota, 
+                                                    category : categoria, 
+                                                    favorite : favorito});
+            res.status(200).json({nota: note, mensaje: 'Nota creada con exito'});
+        } catch (error) {
+            res.status(500).json({success: false, message: `Error al crear la nota: ${error.message}`});
         }
-        const {userId, noteTitle, noteContent, category} = req.body;
-        const noteValidationResult = noteValidation.validateTotal({noteTitle, noteContent, category})
-
-
-        if(noteValidationResult.error) {
-            const [{message}] = noteValidationResult.error.issues
-            return res.status(406).json({error: message})
-        }
-        const note = await notesModel.createNote({userId, noteTitle, noteContent, category});
-        res.json(note);
     }
 }

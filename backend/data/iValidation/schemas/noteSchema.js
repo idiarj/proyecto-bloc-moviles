@@ -7,8 +7,15 @@ export const noteSchema = z.object({
     }).min(2).max(35),
     conte_nota: z.string({
         message: 'El contenido de la nota debe ser un string'
-    }).max(500).optional(),
+    }).max(250).optional(),
     favorito: z.boolean({
         message: 'El campo favorito debe ser un booleano.'
+    }),
+    categoria: z.number({
+        message: 'La categoría de la nota debe ser un número.',
+        required_error: 'La nota debe tener una categoría.'
+    }).int({
+        message: 'La categoría de la nota debe ser un número entero.',
+        required_error: 'La nota debe tener una categoría.'
     })
 })
