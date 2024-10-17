@@ -32,6 +32,10 @@ export class notesModel{
 
     static async updateNote({noteId = null, noteTitle = null, noteContent = null, category = null, favorite = false}){
         try {
+            if(!noteId || !noteTitle || !category || !noteContent){
+                return {success: false, message: 'Faltan datos para actualizar la nota.'}
+            }
+            console.log(noteId, noteTitle, noteContent, category, favorite)
             const note = await iPgHandler.exeQuery({key: 'updateNote', params: [noteTitle, noteContent, category, favorite, noteId]});
             return {success: true, message: 'Nota actualizada exitosamente.', newNote: note}
         } catch (error) {

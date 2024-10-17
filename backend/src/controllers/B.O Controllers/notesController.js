@@ -60,7 +60,7 @@ export class notesController{
 
             const { titu_nota, conte_nota, categoria, favorito } = req.body;
             await noteValidation.validatePartial({titu_nota, conte_nota, categoria, favorito});
-            const note = await notesModel.updateNote({userid, 
+            const note = await notesModel.updateNote({noteId, 
                 noteTitle : titu_nota, 
                 noteContent : conte_nota, 
                 category : categoria, 

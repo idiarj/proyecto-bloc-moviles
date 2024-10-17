@@ -19,6 +19,15 @@ Content-Type: application/json
     "password": "mariana1803"
 }
 
+### Logear otro usuario
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "username": "Idiarj",
+    "password": "16012004"
+}
+
 ### Ver notas del usuario logeado
 GET http://localhost:3000/notes/getNotes
 
@@ -34,7 +43,7 @@ Content-Type: application/json
 }
 
 ### Actualizar nota
-PUT http://localhost:3000/notes/updateNote/3
+PUT http://localhost:3000/notes/updateNote/4
 Content-Type: application/json
 
 {
@@ -45,7 +54,7 @@ Content-Type: application/json
 }
 
 ### Eliminar nota
-DELETE http://localhost:3000/notes/deleteNote/3
+DELETE http://localhost:3000/notes/deleteNote/4
 
 
 ### VER USUARIO LOGEADO
