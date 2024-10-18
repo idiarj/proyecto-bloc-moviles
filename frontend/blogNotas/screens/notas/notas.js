@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, FlatList, Alert, Image, TextInput, Modal, Animated, Easing, StyleSheet } from 'react-native';
 import CustomButton from '../../components/Button/CustomButton';  
+import CustomNotas from '../../components/notas/customNotas';
 import fondo2 from '../../assets/fondo2.jpg'; 
 import editIcon from '../../assets/lapiz.png';
 import deleteIcon from '../../assets/eliminar2.png';
