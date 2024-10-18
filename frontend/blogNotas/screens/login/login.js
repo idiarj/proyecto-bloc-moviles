@@ -4,7 +4,7 @@ import CustomInput from '../../components/Input/CustomInput';
 import CustomButton from '../../components/Button/CustomButton'; 
 import login from '../../assets/login.jpg'; 
 import ForgotPassword from '../ForgotPassword/ForgotPassword';
-import axios from 'axios';
+// import axios from 'axios';
 
 
 const Login = () => {
@@ -13,14 +13,20 @@ const Login = () => {
 
     async function onSingInPressed() {
         try {
-            const response = await axios.post('http://localhost:3000/user/login', {
-                username,
-                password
+            const response = await fetch('http://192.168.0.103:3000/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                }),
             })
-            console.log(response.data);
-            console.log('con la verga y mas que er cono');
-            if(response.status === 200){
-                Alert.alert('Bienvenido a Daily Diaries');
+
+            const data = await response.json();
+            if(response.ok){
+                Alert.alert('Bienvenido', 'Inicio de sesión exitoso');
             }
         } catch (error) {
             console.error(error);
