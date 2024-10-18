@@ -21,5 +21,5 @@
    "insertRecoveryData": "INSERT INTO pregunta_recuperacion (id_usuario, pregunta, respuesta) VALUES ($1, $2, $3)",
    "getRecoveryQuestion": "SELECT pregunta FROM pregunta_recuperacion WHERE id_usuario = $1",
    "verifyRecoveryQuestion": "SELECT LOWER(respuesta) FROM pregunta_recuperacion WHERE id_usuario = $1",
-   "updatePassword": "UPDATE set contra_usu = $1 WHERE id_usuario = $2"
+   "updatePassword": "UPDATE usuario SET contra_usu = $1 WHERE id_usuario = $2"
 }

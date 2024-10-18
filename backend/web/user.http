@@ -16,7 +16,7 @@ Content-Type: application/json
 
 {
     "username": "Idiarj",
-    "password": "16012004"
+    "password": "16012004idiar"
 }
 
 ### VER USUARIO LOGEADO
@@ -39,11 +39,11 @@ Content-Type: application/json
 
 
 ### Establecer nueva password
-POST http://localhost:3000/user/setNewPassword
+PUT http://localhost:3000/user/setNewPassword
 Content-Type: application/json 
 
 {
-    
+    "newPassword": "16012004idiar"
 }
 
 

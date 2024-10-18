@@ -180,7 +180,9 @@ export class userModel{
 
     static async setNewPassword({newPassword, userId}){
         try {
-            const result = await iPgHandler.exeQuery({key: 'updatePassword', params: [newPassword, userId] })
+
+            const hashedNewPassword = await CryptManager.encriptarData({data: newPassword})
+            const result = await iPgHandler.exeQuery({key: 'updatePassword', params: [hashedNewPassword, userId] })
             return {success: true, result}
         } catch (error) {
             throw error;

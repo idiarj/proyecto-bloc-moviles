@@ -153,14 +153,16 @@ export class UserController{
             }
             
             const {userid} = req.session;
-            const {password} = req.body
-            await registerValidation.validatePartial({password})
+            const {newPassword} = req.body
+            await registerValidation.validatePartial({password: newPassword})
             const result = await userModel.setNewPassword({
-                newPassword: password,
+                newPassword,
                 userId: userid
             })
+            await SessionHandler.closeSession(req, res)
             res.status(200).json({
-                ...result
+                ...result,
+                msg: 'Su sesion ha sido cerrada, por favor vuelva a iniciar sesion.'
             })
         } catch (error) {
             res.status(500).json({error: "Error al actualizar la contrasena", detalle: error.message})
