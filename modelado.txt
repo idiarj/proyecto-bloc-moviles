@@ -1,5 +1,29 @@
 CREATE SCHEMA IF NOT EXISTS "public";
 
+CREATE SEQUENCE "public".carpeta_id_carpeta_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".carpeta_id_usuario_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".categoria_id_categoria_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".nota_id_carpeta_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".notas_id_categoria_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".notas_id_nota_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".notas_id_usuario_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".persona_id_persona_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".pregunta_recuperacion_id_pregunta_recuperacion_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".pregunta_recuperacion_id_usuario_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".usuario_id_persona_seq AS integer START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE "public".usuario_id_usuario_seq AS integer START WITH 1 INCREMENT BY 1;
+
 CREATE  TABLE "public".categoria ( 
 	id_categoria         serial  NOT NULL  ,
 	des_categoria        varchar  NOT NULL  ,
@@ -16,33 +40,45 @@ CREATE  TABLE "public".persona (
 CREATE  TABLE "public".usuario ( 
 	id_usuario           serial  NOT NULL  ,
 	nom_usu              varchar  NOT NULL  ,
-	contra_usu           varchar  NOT NULL  ,
 	correo_usu           varchar    ,
-	id_persona           serial    ,
+	id_persona           serial  NOT NULL  ,
+	contra_usu           varchar  NOT NULL  ,
 	CONSTRAINT pk_usuario PRIMARY KEY ( id_usuario )
  );
 
-CREATE  TABLE "public".notas ( 
-	id_nota              serial  NOT NULL  ,
+CREATE  TABLE "public".carpeta ( 
+	id_carpeta           serial  NOT NULL  ,
+	des_carpeta          varchar  NOT NULL  ,
+	id_usuario           serial  NOT NULL  ,
+	CONSTRAINT pk_carpeta PRIMARY KEY ( id_carpeta )
+ );
+
+CREATE  TABLE "public".nota ( 
+	id_nota              integer DEFAULT nextval('notas_id_nota_seq'::regclass) NOT NULL  ,
 	titu_nota            varchar    ,
 	conte_nota           varchar  NOT NULL  ,
+	id_usuario           integer DEFAULT nextval('notas_id_usuario_seq'::regclass) NOT NULL  ,
+	id_categoria         integer DEFAULT nextval('notas_id_categoria_seq'::regclass) NOT NULL  ,
 	favorito             boolean    ,
-	id_usuario           serial    ,
-	id_categoria         serial    ,
+	id_carpeta           serial    ,
 	CONSTRAINT pk_notas PRIMARY KEY ( id_nota )
  );
 
 CREATE  TABLE "public".pregunta_recuperacion ( 
-	id_pregunta          varchar  NOT NULL  ,
+	id_pregunta_recuperacion serial  NOT NULL  ,
 	pregunta             varchar  NOT NULL  ,
 	respuesta            varchar  NOT NULL  ,
-	id_usuario           serial    ,
-	CONSTRAINT pk_pregunta_recuperacion PRIMARY KEY ( id_pregunta )
+	id_usuario           serial  NOT NULL  ,
+	CONSTRAINT pk_pregunta_recuperacion PRIMARY KEY ( id_pregunta_recuperacion )
  );
 
-ALTER TABLE "public".notas ADD CONSTRAINT fk_notas_usuario FOREIGN KEY ( id_usuario ) REFERENCES "public".usuario( id_usuario );
+ALTER TABLE "public".carpeta ADD CONSTRAINT fk_carpeta_usuario FOREIGN KEY ( id_usuario ) REFERENCES "public".usuario( id_usuario );
 
-ALTER TABLE "public".notas ADD CONSTRAINT fk_notas_categoria FOREIGN KEY ( id_categoria ) REFERENCES "public".categoria( id_categoria );
+ALTER TABLE "public".nota ADD CONSTRAINT fk_notas_usuario FOREIGN KEY ( id_usuario ) REFERENCES "public".usuario( id_usuario );
+
+ALTER TABLE "public".nota ADD CONSTRAINT fk_notas_categoria FOREIGN KEY ( id_categoria ) REFERENCES "public".categoria( id_categoria );
+
+ALTER TABLE "public".nota ADD CONSTRAINT fk_nota_carpeta FOREIGN KEY ( id_carpeta ) REFERENCES "public".carpeta( id_carpeta );
 
 ALTER TABLE "public".pregunta_recuperacion ADD CONSTRAINT fk_pregunta_recuperacion_usuario FOREIGN KEY ( id_usuario ) REFERENCES "public".usuario( id_usuario );
 

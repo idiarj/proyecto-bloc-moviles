@@ -16,19 +16,16 @@ export class folderModel{
         }
     }
 
-    static async deleteFolder({idFolder, idUser}){
+    static async deleteFolder({idFolder}){
         const client = await iPgHandler.beginTransaction();
         try {
-            if(!SessionHandler.verifySession(req)){
-                res.status(401).json({error: 'Sesión no válida.'});
-                return;
-            }
+
             await iPgHandler.exeQuery({key: 'deleteNotesFromFolder', params: [idFolder], client});
-            await iPgHandler.exeQuery({key: 'deleteFolder', params: [idFolder, idUser], client});
-            await iPgHandler.commit(client);
+            await iPgHandler.exeQuery({key: 'deleteFolder', params: [idFolder], client});
+            await iPgHandler.commitTransaction(client);
             return {sucess: true, message: 'Carpeta eliminada correctamente'};
         } catch (error) {
-            await iPgHandler.rollback(client);
+            await iPgHandler.rollbackTransaction
             throw error;
         }
     }
@@ -54,8 +51,8 @@ export class folderModel{
 
     static async getFolderNotes({folderId}){
         try {
-            const notes = await iPgHandler.exeQuery({key: 'getFolderNotes', params: [folderId]});
-            return {sucess: true, message: 'Notas obtenidas correctamente', notes};
+            const notes = await iPgHandler.exeQuery({key: 'getNotesFromFolder', params: [folderId]});
+            return {sucess: true, message: 'Notas obtenidas de la carpeta correctamente', notes};
         } catch (error) {
             throw error;
         }

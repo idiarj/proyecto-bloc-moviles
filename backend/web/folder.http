@@ -20,15 +20,5 @@ Content-Type: application/json
 ### Ver notas de una carpeta
 GET http://localhost:3000/folder/getNotes/3
 
-
-
-
-
-
-
-
-
-
-
-### Eliminar carpeta
-DELETE http://localhost:3000/folder/deleteFolder/1
+### Borrar una carpeta
+DELETE http://localhost:3000/folder/deleteFolder/3

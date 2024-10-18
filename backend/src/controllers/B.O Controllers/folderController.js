@@ -8,7 +8,7 @@ export class folderController{
             if(!SessionHandler.verifySession(req)) return res.status(400).json({message: 'Sesion no valida.'}); 
             const {userid} = req.session;
             const folders = await folderModel.getFolders({idUser: userid});
-            res.status(200).json({folders});
+            res.status(200).json({...folders});
         } catch (error) {
             console.log(error)
             res.status(500).json({sucess: false, message: error.message});
@@ -52,7 +52,20 @@ export class folderController{
             const {userid} = req.session;
 
             const folder = await folderModel.deleteFolder({idFolder: folderId, idUser: userid});
-            res.status(200).json(...folder);
+            res.status(200).json({...folder});
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({sucess: false, message: error.message});
+        }
+    }
+
+    static async getNotesFromFolders(req, res){
+        try {
+            if(!SessionHandler.verifySession(req)) return res.status(400).json({message: 'Sesion no valida.'});
+
+            const {folderId} = req.params;
+            const notes = await folderModel.getFolderNotes({folderId});
+            res.status(200).json({...notes});
         } catch (error) {
             console.log(error)
             res.status(500).json({sucess: false, message: error.message});
