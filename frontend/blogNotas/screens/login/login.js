@@ -4,18 +4,26 @@ import CustomInput from '../../components/Input/CustomInput';
 import CustomButton from '../../components/Button/CustomButton'; 
 import login from '../../assets/login.jpg'; 
 import ForgotPassword from '../ForgotPassword/ForgotPassword';
+import axios from 'axios';
 
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    function onSingInPressed() {
-        if (!username || !password) {
-            Alert.alert('Error', 'Por favor completa todos los campos.');
-        } else { //logica de inicio de sesion,
-            Alert.alert('Inicio de sesión', '¡Has iniciado sesión correctamente!');
-            console.log('Sing in');
+    async function onSingInPressed() {
+        try {
+            const response = await axios.post('http://localhost:3000/user/login', {
+                username,
+                password
+            })
+            console.log(response.data);
+            console.log('con la verga y mas que er cono');
+            if(response.status === 200){
+                Alert.alert('Bienvenido a Daily Diaries');
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 

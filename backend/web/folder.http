@@ -6,19 +6,19 @@ POST http://localhost:3000/folder/createFolder
 Content-Type: application/json
 
 {
-    "folderName": "Carpeta de Burgos"
+    "folderName": "Carpeta de Idiar"
 }
 
 ### Actualizar carpeta
-PUT http://localhost:3000/folder/updateFolder/1
+PUT http://localhost:3000/folder/updateFolder/3
 Content-Type: application/json
 
 {
-    "newFolderName": "Carpeta de Burgosz"
+    "newFolderName": "Carpeta de Odiar"
 }
 
 ### Ver notas de una carpeta
-GET http://localhost:3000/folder/getNotes/1
+GET http://localhost:3000/folder/getNotes/3
 
 
 

@@ -8,7 +8,7 @@
     "select_personas": "SELECT * FROM persona",
     "getNotes": "SELECT n.titu_nota AS titu_nota, n.conte_nota AS conte_nota, cat.des_categoria AS categoria, n.favorito AS favorito FROM nota n INNER JOIN categoria cat ON n.id_categoria = cat.id_categoria WHERE n.id_usuario = $1;",
     "createNote": "INSERT INTO nota (titu_nota, conte_nota, id_usuario, id_categoria, favorito, id_carpeta) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_nota",
-    "updateNote": "UPDATE nota SET titu_nota = $1, conte_nota = $2, id_categoria = $3, favorito = $4 WHERE id_nota = $5",
+    "updateNote": "UPDATE nota SET titu_nota = $1, conte_nota = $2, id_categoria = $3, favorito = $4, id_carpeta = $5 WHERE id_nota = $6",
    "verifyOwner": "SELECT id_usuario AS owner FROM nota WHERE id_nota = $1",
    "deleteNote": "DELETE FROM nota WHERE id_nota = $1",
    "createFolder": "INSERT INTO carpeta(des_carpeta, id_usuario) VALUES ($1, $2)",
@@ -16,5 +16,6 @@
    "updateFolder": "UPDATE carpeta SET des_carpeta = $1 WHERE id_carpeta = $2",
    "deleteNoteFromFolder": "UPDATE nota SET id_carpeta = NULL WHERE id_nota = $1",
    "deleteFolder": "DELETE FROM carpeta WHERE id_carpeta = $1",
-   "getNotesFromFolder": "SELECT * FROM nota WHERE id_carpeta = $1"
+   "deleteNotesFromFolder": "DELETE FROM nota WHERE id_carpeta = $1",
+   "getNotesFromFolder": "SELECT n.titu_nota AS titu_nota, n.conte_nota AS conte_nota, cat.des_categoria AS categoria, n.favorito AS favorito FROM nota n INNER JOIN categoria cat ON n.id_categoria = cat.id_categoria WHERE n.id_carpeta = $1;"
 }

@@ -6,21 +6,23 @@ POST http://localhost:3000/notes/createNote
 Content-Type: application/json
 
 {
-    "titu_nota": "Nota de Burgos",
-    "conte_nota": "Esta es la nota de Burgos",
-    "favorito": false,
-    "categoria": 1
+    "titu_nota": "Nota de Idiar 2",
+    "conte_nota": "Esta es la nota de Idiar 2",
+    "favorito": true,
+    "categoria": 3,
+    "carpeta": 3
 }
 
 ### Actualizar nota
-PUT http://localhost:3000/notes/updateNote/6
+PUT http://localhost:3000/notes/updateNote/8
 Content-Type: application/json
 
 {
     "titu_nota": "Ya no vamos a papear en Smite",
     "conte_nota": "No papeamoss en Smite con los panas",
     "favorito": true,
-    "categoria": 1
+    "categoria": 1,
+    "carpeta": 3
 }
 
 ### Eliminar nota

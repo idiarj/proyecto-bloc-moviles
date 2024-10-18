@@ -23,18 +23,19 @@ export class notesController{
                 res.status(401).json({error: 'Sesión no válida.'});
                 return;
             }
-            const { titu_nota, conte_nota, categoria, favorito } = req.body;
+            const { titu_nota, conte_nota, categoria, favorito, carpeta } = req.body;
             console.log(req.session)
             const {userid} = req.session;
     
             console.log(req.body)
-            console.log(titu_nota, conte_nota, categoria, favorito)
-            const noteValidationResult = noteValidation.validateTotal({titu_nota, conte_nota, categoria, favorito})
+            console.log(titu_nota, conte_nota, categoria, favorito, carpeta)
+            const noteValidationResult = noteValidation.validateTotal({titu_nota, conte_nota, categoria, favorito, carpeta})
             const note = await notesModel.createNote({userid, 
                                                     noteTitle : titu_nota, 
                                                     noteContent : conte_nota, 
                                                     category : categoria, 
-                                                    favorite : favorito});
+                                                    favorite : favorito,
+                                                    folder: carpeta});
             res.status(200).json({nota: note, mensaje: 'Nota creada con exito'});
         } catch (error) {
             res.status(500).json({success: false, message: `Error al crear la nota: ${error.message}`});
@@ -58,13 +59,14 @@ export class notesController{
                 return;
             }
 
-            const { titu_nota, conte_nota, categoria, favorito } = req.body;
-            await noteValidation.validatePartial({titu_nota, conte_nota, categoria, favorito});
+            const { titu_nota, conte_nota, categoria, favorito, carpeta } = req.body;
+            await noteValidation.validatePartial({titu_nota, conte_nota, categoria, favorito, carpeta});
             const note = await notesModel.updateNote({noteId, 
                 noteTitle : titu_nota, 
                 noteContent : conte_nota, 
                 category : categoria, 
-                favorite : favorito});
+                favorite : favorito,
+                folder: carpeta});
 
             res.status(200).json({nota: note, mensaje: 'Nota actualizada con exito'});
 
