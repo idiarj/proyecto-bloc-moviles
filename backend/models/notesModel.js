@@ -17,12 +17,12 @@ export class notesModel{
         }
     }
 
-    static async createNote({userid = null, noteTitle = null, noteContent = null, category = null, favorite = false}){
+    static async createNote({userid = null, noteTitle = null, noteContent = null, category = null, favorite = false, folder = null}){
         try {
             if(!userid || !noteTitle || !category || !noteContent){
                 return {success: false, message: 'Faltan datos para crear la nota.'}
             }
-            const note =  await iPgHandler.exeQuery({key: 'createNote', params: [noteTitle, noteContent, userid, category, favorite]})
+            const note =  await iPgHandler.exeQuery({key: 'createNote', params: [noteTitle, noteContent, userid, category, favorite, folder]})
             console.log(note)
             return {success: true, message: 'Nota creada exitosamente.'}
         } catch (error) {

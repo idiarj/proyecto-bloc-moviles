@@ -1,0 +1,27 @@
+### Ver notas del usuario logeado
+GET http://localhost:3000/notes/getNotes
+
+### Crear una nota
+POST http://localhost:3000/notes/createNote
+Content-Type: application/json
+
+{
+    "titu_nota": "Nota de Burgos",
+    "conte_nota": "Esta es la nota de Burgos",
+    "favorito": false,
+    "categoria": 1
+}
+
+### Actualizar nota
+PUT http://localhost:3000/notes/updateNote/6
+Content-Type: application/json
+
+{
+    "titu_nota": "Ya no vamos a papear en Smite",
+    "conte_nota": "No papeamoss en Smite con los panas",
+    "favorito": true,
+    "categoria": 1
+}
+
+### Eliminar nota
+DELETE http://localhost:3000/notes/deleteNote/7

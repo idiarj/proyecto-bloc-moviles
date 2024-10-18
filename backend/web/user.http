@@ -1,0 +1,42 @@
+### Registrar usuario
+POST http://localhost:3000/user/register
+Content-Type: application/json
+
+{
+    "nombre": "Jose",
+    "apellido": "Burgos",
+    "username": "Burgosz",
+    "correo": "joseburgos@gmail.com",
+    "password": "nathaly2003"
+}
+
+### Logear un usuario
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "username": "Burgosz",
+    "password": "nathaly2003"
+}
+
+### Logear otro usuario
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "username": "Idiarj",
+    "password": "16012004"
+}
+
+
+
+### VER USUARIO LOGEADO
+GET http://localhost:3000/user/login
+
+### Cerrar sesion
+POST http://localhost:3000/user/logout
+
+### Home
+GET http://localhost:3000/home
+
+

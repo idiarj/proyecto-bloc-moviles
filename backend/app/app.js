@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import cors_config from '../config/cors-config.json'  assert {type: 'json'}
-import { userRouter, homeRouter, notesRouter } from '../src/routes/dispatcher.js'
+import { userRouter, homeRouter, notesRouter, folderRouter } from '../src/routes/dispatcher.js'
 import { SessionHandler } from '../data/iSession/iSession.js'
 import { isAuthMiddleware } from '../src/middlewares/isAuthMiddleware.js'
 
@@ -20,6 +20,7 @@ app.use('/user', userRouter);
 
 app.use('/notes', notesRouter);
 
+app.use('/folder', folderRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=>{

@@ -17,5 +17,10 @@ export const noteSchema = z.object({
     }).int({
         message: 'La categoría de la nota debe ser un número entero.',
         required_error: 'La nota debe tener una categoría.'
-    })
+    }),
+    folder: z.number({
+        message: 'La carpeta no es valida.'
+    }).int({
+        message: 'La carpeta no es valida.',
+    }).optional(),
 })

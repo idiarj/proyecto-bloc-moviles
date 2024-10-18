@@ -9,19 +9,16 @@ export class UserController{
 
     static async registerControlPost(req, res){
         console.log(`----- REGISTER CONTROLLER ----------`)
-
-
-
         try {
             console.log('entre en el trycatch del controller')
             const result = await registerValidation.validateTotal(req.body);
             const registerResult = await userModel.registerUser(result.data);
-            console.log(registerResult)
+            console.log('registerResult',registerResult)
            
             if(registerResult && registerResult.success) {
                 return res.json({mensaje: 'Usuario registrado exitosamente'});
             } else {
-                return res.status(400).json({error: 'No se pudo registrar el usuario'});
+                return res.status(400).json({error: registerResult.message});
             }
         } catch (error) {
 
