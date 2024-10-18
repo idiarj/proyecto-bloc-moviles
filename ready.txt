@@ -3,8 +3,9 @@ BACKEND
 Registrar, logear, logout usuario.
 Crear, actualizar, leer, borrar notas.
 Crear, actualizar, leer, y borrar carpetas.
+Al borrar una carpeta se borra todas las notas que estan dentro.
+
 
 TODO:
 BACKEND
-Al borrar una carpeta se borra todas las notas que estan dentro.
 Recuperacion de contrasena con las preguntas.

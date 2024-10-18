@@ -59,14 +59,14 @@ export class notesController{
                 return;
             }
 
-            const { titu_nota, conte_nota, categoria, favorito, carpeta } = req.body;
-            await noteValidation.validatePartial({titu_nota, conte_nota, categoria, favorito, carpeta});
+            const { titu_nota, conte_nota, categoria, favorito, id_carpeta } = req.body;
+            await noteValidation.validatePartial({titu_nota, conte_nota, categoria, favorito, id_carpeta});
             const note = await notesModel.updateNote({noteId, 
                 noteTitle : titu_nota, 
                 noteContent : conte_nota, 
                 category : categoria, 
                 favorite : favorito,
-                folder: carpeta});
+                folder: id_carpeta});
 
             res.status(200).json({nota: note, mensaje: 'Nota actualizada con exito'});
 

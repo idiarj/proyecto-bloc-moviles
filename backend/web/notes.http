@@ -13,14 +13,15 @@ Content-Type: application/json
 }
 
 ### Actualizar nota
-PUT http://localhost:3000/notes/updateNote/8
+PUT http://localhost:3000/notes/updateNote/10
 Content-Type: application/json
 
 {
-    "titu_nota": "Nota que no esta en una carpeta",
-    "conte_nota": "Nota que definitivamente no esta en una carpeta",
+    "titu_nota": "Nota que si deberia estar en una carpeta",
+    "conte_nota": "Nota que definitivamente si deberia esta en una carpeta",
     "favorito": true,
     "categoria": 1,
+    "id_carpeta": 4
 }
 
 ### Eliminar nota
