@@ -28,4 +28,22 @@ POST http://localhost:3000/user/logout
 ### Home
 GET http://localhost:3000/home
 
+### Establecer pregunta de seguridad
+POST http://localhost:3000/user/recoveryData
+Content-Type: application/json
+
+{
+    "pregunta": "¿Cual es tu color favorito?",
+    "respuesta": "Azul"
+}
+
+
+### Establecer nueva password
+POST http://localhost:3000/user/setNewPassword
+Content-Type: application/json 
+
+{
+    
+}
+
 

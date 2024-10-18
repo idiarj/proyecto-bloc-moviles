@@ -2,6 +2,8 @@ import { SessionHandler } from "../../data/iSession/iSession.js"
 import { loginValidation } from "../../data/iValidation/iValidation.js"
 import { registerValidation } from "../../data/iValidation/iValidation.js"
 import { userModel } from "../../models/userModel.js"
+import { recoveryDataValidation } from "../../data/iValidation/iValidation.js"
+import { iPgHandler } from "../../data/psql-data/iPgManager.js"
 
 
 
@@ -93,4 +95,75 @@ export class UserController{
             }
         }
 
+    static async postRecoveryData(req, res){
+        try {
+            if (!SessionHandler.verifySession(req)) {
+                return res.json({ mensaje: 'No hay sesion activa' });
+            }
+
+            const {userid} = req.session;
+            const alreadyHasQuestion = await userModel.getRecoveryData({userId: userid});
+            console.log(alreadyHasQuestion)
+            if(alreadyHasQuestion.success) return res.status(400).json({error: 'Ya tiene una pregunta de recuperacion establecida.'})
+            const {pregunta, respuesta} = req.body;
+            await recoveryDataValidation.validateTotal({pregunta, respuesta});
+
+            const result = await userModel.setRecoveryData({userId: userid, 
+                                                            question: pregunta,  
+                                                            answer: respuesta});
+
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: 'Error al establecer los datos', detalle: error.message})
+        }
+    }
+
+    static async getRecoveryQuestion(req, res){
+        try {
+            if (!SessionHandler.verifySession(req)) {
+                return res.json({ mensaje: 'No hay sesion activa' });
+            }
+            const {userid} = req.session;
+            const question = await userModel.getRecoveryData({userId: userid});
+            res.status(200).json(question);
+        } catch (error) {
+            res.status(500).json({error: 'Error al obtener la pregunta', detalle: error.message})
+        }
+    }
+
+    static async postRecoveryAnswer(req, res){
+        try {
+            if (!SessionHandler.verifySession(req)) {
+                return res.json({ mensaje: 'No hay sesion activa' });
+            }
+            const {userid} = req.session;
+            const {respuesta} = req.body;
+            await recoveryDataValidation.validatePartial({respuesta});
+            const result = await userModel.verifyRecoveryAnswer({userId: userid, answer: respuesta});
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: 'Error al verificar la respuesta', detalle: error.message})
+        }
+    }
+
+    static async putPassword(req, res){
+        try {
+            if (!SessionHandler.verifySession(req)) {
+                return res.json({ mensaje: 'No hay sesion activa' });
+            }
+            
+            const {userid} = req.session;
+            const {password} = req.body
+            await registerValidation.validatePartial({password})
+            const result = await userModel.setNewPassword({
+                newPassword: password,
+                userId: userid
+            })
+            res.status(200).json({
+                ...result
+            })
+        } catch (error) {
+            res.status(500).json({error: "Error al actualizar la contrasena", detalle: error.message})
+        }
+    }
 }

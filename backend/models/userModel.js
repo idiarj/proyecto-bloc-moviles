@@ -138,4 +138,53 @@ export class userModel{
         }
     }
 
+    static async getRecoveryData({userId}){
+        try {
+            const question = await iPgHandler.exeQuery({key: 'getRecoveryQuestion', params: [userId]});
+            if(question && question.length > 0){
+                return {success: true, question}
+            }
+
+            return {success: false}
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async verifyRecoveryAnswer({userId, answer}){
+        try {
+            const result = await iPgHandler.exeQuery({key: 'verifyRecoveryAnswer', params: [userId]});
+            if(result && result.length > 0){
+                const [{respuesta}] = result
+                const validity = await CryptManager.compareData({hashedData: respuesta, toCompare: answer})
+                return {success: true, validity}
+            }else{
+                return {success: false}
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async setRecoveryData({userId, question, answer}){
+        try {
+
+            const hashedAnswer = await CryptManager.encriptarData({data: answer});
+
+            const recoveryData = await iPgHandler.exeQuery({key: 'insertRecoveryData', params: [userId, question, hashedAnswer]});
+            return {success: true, recoveryData}
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async setNewPassword({newPassword, userId}){
+        try {
+            const result = await iPgHandler.exeQuery({key: 'updatePassword', params: [newPassword, userId] })
+            return {success: true, result}
+        } catch (error) {
+            throw error;
+        }
+    }
+
 }

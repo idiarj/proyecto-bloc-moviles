@@ -17,5 +17,9 @@
    "deleteNoteFromFolder": "UPDATE nota SET id_carpeta = NULL WHERE id_nota = $1",
    "deleteFolder": "DELETE FROM carpeta WHERE id_carpeta = $1",
    "deleteNotesFromFolder": "DELETE FROM nota WHERE id_carpeta = $1",
-   "getNotesFromFolder": "SELECT n.titu_nota AS titu_nota, n.conte_nota AS conte_nota, cat.des_categoria AS categoria, n.favorito AS favorito FROM nota n INNER JOIN categoria cat ON n.id_categoria = cat.id_categoria WHERE n.id_carpeta = $1;"
+   "getNotesFromFolder": "SELECT n.titu_nota AS titu_nota, n.conte_nota AS conte_nota, cat.des_categoria AS categoria, n.favorito AS favorito FROM nota n INNER JOIN categoria cat ON n.id_categoria = cat.id_categoria WHERE n.id_carpeta = $1;",
+   "insertRecoveryData": "INSERT INTO pregunta_recuperacion (id_usuario, pregunta, respuesta) VALUES ($1, $2, $3)",
+   "getRecoveryQuestion": "SELECT pregunta FROM pregunta_recuperacion WHERE id_usuario = $1",
+   "verifyRecoveryQuestion": "SELECT LOWER(respuesta) FROM pregunta_recuperacion WHERE id_usuario = $1",
+   "updatePassword": "UPDATE set contra_usu = $1 WHERE id_usuario = $2"
 }
