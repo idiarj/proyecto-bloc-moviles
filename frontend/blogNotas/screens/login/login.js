@@ -4,18 +4,32 @@ import CustomInput from '../../components/Input/CustomInput';
 import CustomButton from '../../components/Button/CustomButton'; 
 import login from '../../assets/login.jpg'; 
 import ForgotPassword from '../ForgotPassword/ForgotPassword';
+// import axios from 'axios';
 
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    function onSingInPressed() {
-        if (!username || !password) {
-            Alert.alert('Error', 'Por favor completa todos los campos.');
-        } else { //logica de inicio de sesion,
-            Alert.alert('Inicio de sesión', '¡Has iniciado sesión correctamente!');
-            console.log('Sing in');
+    async function onSingInPressed() {
+        try {
+            const response = await fetch('http://192.168.0.103:3000/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                }),
+            })
+
+            const data = await response.json();
+            if(response.ok){
+                Alert.alert('Bienvenido', 'Inicio de sesión exitoso');
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 

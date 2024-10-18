@@ -1,8 +1,12 @@
 import { Validation } from "../../utils/security/validation.js";
 import { userLoginSchema } from "./schemas/loginSchema.js";
 import { userRegisterSchema } from "./schemas/registerSchema.js";
-import { projectSchema } from "./schemas/projectSchema.js";
+import { noteSchema } from "./schemas/noteSchema.js";
+import { folderSchema } from "./schemas/folderSchema.js";
+import { recoveryDataSchema } from "./schemas/recoveryDataSchema.js";
 
 export const loginValidation = new Validation(userLoginSchema)
 export const registerValidation = new Validation(userRegisterSchema); 
-export const projectValidation = new Validation(projectSchema)
+export const noteValidation = new Validation(noteSchema)
+export const folderValidation = new Validation(folderSchema)
+export const recoveryDataValidation = new Validation(recoveryDataSchema)    

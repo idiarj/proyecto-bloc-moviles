@@ -1,0 +1,49 @@
+### Registrar usuario
+POST http://localhost:3000/user/register
+Content-Type: application/json
+
+{
+    "nombre": "Idiar",
+    "apellido": "Chacin",
+    "username": "Idiarj",
+    "correo": "idiar16@gmail.com",
+    "password": "16012004"
+}
+
+### Logear un usuario
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "username": "Idiarj",
+    "password": "16012004idiar"
+}
+
+### VER USUARIO LOGEADO
+GET http://localhost:3000/user/login
+
+### Cerrar sesion
+POST http://localhost:3000/user/logout
+
+### Home
+GET http://localhost:3000/home
+
+### Establecer pregunta de seguridad
+POST http://localhost:3000/user/recoveryData
+Content-Type: application/json
+
+{
+    "pregunta": "¿Cual es tu color favorito?",
+    "respuesta": "Azul"
+}
+
+
+### Establecer nueva password
+PUT http://localhost:3000/user/setNewPassword
+Content-Type: application/json 
+
+{
+    "newPassword": "16012004idiar"
+}
+
+

@@ -12,10 +12,10 @@ import Navigation from './navigation';
 const App = () => {  
   return (
    <SafeAreaView style={styles.root}>
-    {/* <Login /> */}
+    <Login />
     {/* <Register/> */}
-    {/* <ForgotPassword /> */}
-    <Notas />
+    <ForgotPassword />
+    {/* <Notas /> */}
     {/* <Favoritos /> */}
     {/* <ResetPassword /> */}
     {/* <Navigation/> */}

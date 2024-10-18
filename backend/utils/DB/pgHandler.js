@@ -57,13 +57,11 @@ export class PgHandler{
             console.log(`los parametros son ${params}`)
             
             const result = await client.query(query, params)
-            // console.log(result)
             console.log(result.rows)
             return result.rows
 
         } catch (error) {
 
-            // console.log(error)
             throw error;
 
         }
@@ -111,7 +109,6 @@ export class PgHandler{
         //if(client) throw new Error('No se ha proporcionado un cliente o se proporciono uno invalio.')
         try{
             await client.query('COMMIT')
-            await this.releaseConn(client)
         }catch{     
             throw new Error(`No se ha podido realizar la transaccion, ${error.message}`)
         }
@@ -126,7 +123,6 @@ export class PgHandler{
     async rollbackTransaction(client){
         try {
             await client.query('ROLLBACK')
-            await this.releaseConn(client)
         } catch (error) {
             throw new Error(error.message)
         }

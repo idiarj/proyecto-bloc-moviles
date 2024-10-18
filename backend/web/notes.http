@@ -1,0 +1,28 @@
+### Ver notas del usuario logeado
+GET http://localhost:3000/notes/getNotes
+
+### Crear una nota
+POST http://localhost:3000/notes/createNote
+Content-Type: application/json
+
+{
+    "titu_nota": "Nota que no esta en una carpeta",
+    "conte_nota": "Nota que definitivamente no esta en una carpeta",
+    "favorito": true,
+    "categoria": 1
+}
+
+### Actualizar nota
+PUT http://localhost:3000/notes/updateNote/10
+Content-Type: application/json
+
+{
+    "titu_nota": "Nota que si deberia estar en una carpeta",
+    "conte_nota": "Nota que definitivamente si deberia esta en una carpeta",
+    "favorito": true,
+    "categoria": 1,
+    "id_carpeta": 4
+}
+
+### Eliminar nota
+DELETE http://localhost:3000/notes/deleteNote/7

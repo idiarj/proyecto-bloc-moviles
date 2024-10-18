@@ -3,10 +3,6 @@ import { CryptManager } from "../utils/security/CryptManager.js";
 
 export class userModel{
 
-    
-
-
-
     static async getAllUsers(){
         try{
         const result = await iPgHandler.exeQuery({key: 'select'})
@@ -54,6 +50,9 @@ export class userModel{
         try {
             console.log('entre en el try de user model registeruser')
             console.log(`insertando la persona ${nombre} ${apellido}`);
+            const equalUsername = await this.verifyEqualUsernames({usernameCli: username})
+            console.log('equalUsername es', equalUsername)
+            if(!equalUsername.success) return {success: false, message: equalUsername.error};
             const [{
                 id_persona
             }] = await iPgHandler.exeQuery({key: 'insert_persona', params: [nombre, apellido], client});
@@ -82,14 +81,10 @@ export class userModel{
         try {
             console.log(`user es ${user}`)
             const resultSet = await iPgHandler.exeQuery({key: 'verifyUser', params: [user]})
-            // console.log(result)
+
 
             if(resultSet && resultSet.length > 0){
-
-                // const [ {username} ] = result
-                // console.log(username)
                 return {success: true, resultSet}
-
             }else{
                 console.log('usuario no encontrado')
                 return { success: false, resultSet }
@@ -120,63 +115,78 @@ export class userModel{
         }
     }
 
-    static async getUsernameId({user}){
-        try{
-            const key = 'getUserId'
-            const params = [user]
-            const [{id_user}] = await iPgHandler.exeQuery({key, params})
-            return id_user
-        }catch(error){
-            return {error}
-        }
-    }
-
-    /**
-     * Method to find a user by their email.
-     * @param {String} email - The email of the user to find.
-     * @returns {Promise<Object|null>} - The user object if found, null otherwise.
-     */
-    static async findByEmail(email) {
-    try {
-        const query = 'SELECT * FROM users WHERE email = $1'; // Adjust the query according to your database schema
-        const result = await iPgHandler.exeQuery({key: 'findByEmail', params: [email]});
-        if (result && result.rows && result.rows.length > 0) {
-            return result.rows[0]; // Assuming email is unique and can only find one user
-        } else {
-            return null;
-        }
-    } catch (error) {
-        console.error('Error finding user by email:', error);
-        throw error; // Rethrow the error or handle it as needed
-    }
-}
-
-    /**
-     * Saves a password reset token for a user identified by their email.
-     * @param {String} email - The email of the user to save the reset token for.
-     * @param {String} resetToken - The reset token to save.
-     * @param {Date} expirationDate - The expiration date of the reset token.
-     * @returns {Promise<Boolean>} - True if the token was saved successfully, false otherwise.
-     */
-    static async saveResetToken(email, resetToken, expirationDate) {
+    static async verifyEqualUsernames({usernameCli}){
         try {
-            // Assuming iPgHandler is your database instance and there's a prepared statement for saving the token
-            const query = 'UPDATE "public".usuario SET reset_token = $2, reset_token_expiration = $3 WHERE correo_usu = $1;';
-            await iPgHandler.exeQuery(query, [email, resetToken, expirationDate]);
-            return true;
+            console.log(`usernameCLi ${usernameCli}`)
+            const validUser = await this.verifyUser({user: usernameCli});
+            console.log('validUser es', validUser)
+            if(validUser.success){
+                const [{username}] = validUser.resultSet
+                const userFromModel = typeof username === 'string' ? username.toLowerCase() : null;
+                console.log(`userFromModel ${userFromModel}, usernameCli ${usernameCli.toLowerCase()}, son iguales? ${(userFromModel === usernameCli.toLowerCase())} `)
+                if(userFromModel === usernameCli.toLowerCase()) {
+                    return {
+                        success: false,
+                        error: "El usuario que estás intentando registrar ya existe."
+                    }
+                }
+            }
+
+            return {success: true}
         } catch (error) {
-            console.error('Error saving reset token:', error);
-            return false;
+            throw error;
         }
     }
 
-    /**
-     * 
-     * @param {Object} param - Objeto con el usuario y contrasena introducidas por el cliente
-     * @param {String} param.username - Usuario que intenta ingresar sesion y al cual se le validara la password
-     * @param {String} param.password - Password a validar 
-     * @returns {Promise<Boolean>} - Promesa que resuelva a un booleano, true si la contrasena es valia y false si no lo es.
-     */
+    static async getRecoveryData({userId}){
+        try {
+            const question = await iPgHandler.exeQuery({key: 'getRecoveryQuestion', params: [userId]});
+            if(question && question.length > 0){
+                return {success: true, question}
+            }
 
+            return {success: false}
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async verifyRecoveryAnswer({userId, answer}){
+        try {
+            const result = await iPgHandler.exeQuery({key: 'verifyRecoveryAnswer', params: [userId]});
+            if(result && result.length > 0){
+                const [{respuesta}] = result
+                const validity = await CryptManager.compareData({hashedData: respuesta, toCompare: answer})
+                return {success: true, validity}
+            }else{
+                return {success: false}
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async setRecoveryData({userId, question, answer}){
+        try {
+
+            const hashedAnswer = await CryptManager.encriptarData({data: answer});
+
+            const recoveryData = await iPgHandler.exeQuery({key: 'insertRecoveryData', params: [userId, question, hashedAnswer]});
+            return {success: true, recoveryData}
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async setNewPassword({newPassword, userId}){
+        try {
+
+            const hashedNewPassword = await CryptManager.encriptarData({data: newPassword})
+            const result = await iPgHandler.exeQuery({key: 'updatePassword', params: [hashedNewPassword, userId] })
+            return {success: true, result}
+        } catch (error) {
+            throw error;
+        }
+    }
 
 }

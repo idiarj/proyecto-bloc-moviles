@@ -2,6 +2,8 @@ import { SessionHandler } from "../../data/iSession/iSession.js"
 import { loginValidation } from "../../data/iValidation/iValidation.js"
 import { registerValidation } from "../../data/iValidation/iValidation.js"
 import { userModel } from "../../models/userModel.js"
+import { recoveryDataValidation } from "../../data/iValidation/iValidation.js"
+import { iPgHandler } from "../../data/psql-data/iPgManager.js"
 
 
 
@@ -9,42 +11,16 @@ export class UserController{
 
     static async registerControlPost(req, res){
         console.log(`----- REGISTER CONTROLLER ----------`)
-
-        const result = await registerValidation.validateTotal(req.body);
-
-
-        if(result.error) {
-
-
-            const [{message}] = result.error.issues
-            return res.status(406).json({error: message})
-
-        }
-
-        const usernameCli = result.data['username']
-        console.log(`usernameCLi ${usernameCli}`)
-        const validUser = await userModel.verifyUser({user: usernameCli});
-        console.log('validUser es', validUser)
-        if(validUser.success){
-            const [{username}] = validUser.resultSet
-            const userFromModel = typeof username === 'string' ? username.toLowerCase() : null;
-            console.log(`userFromModel ${userFromModel}, usernameCli ${usernameCli.toLowerCase()}, son iguales? ${(userFromModel === usernameCli.toLowerCase())} `)
-            if(userFromModel === usernameCli.toLowerCase()) {
-                return res.status(400).json({
-                    error: "El usuario que estás intentando registrar ya existe."
-                });
-            }
-        }
-
         try {
             console.log('entre en el trycatch del controller')
+            const result = await registerValidation.validateTotal(req.body);
             const registerResult = await userModel.registerUser(result.data);
-            console.log(registerResult)
+            console.log('registerResult',registerResult)
            
             if(registerResult && registerResult.success) {
                 return res.json({mensaje: 'Usuario registrado exitosamente'});
             } else {
-                return res.status(400).json({error: 'No se pudo registrar el usuario'});
+                return res.status(400).json({error: registerResult.message});
             }
         } catch (error) {
 
@@ -119,4 +95,77 @@ export class UserController{
             }
         }
 
+    static async postRecoveryData(req, res){
+        try {
+            if (!SessionHandler.verifySession(req)) {
+                return res.json({ mensaje: 'No hay sesion activa' });
+            }
+
+            const {userid} = req.session;
+            const alreadyHasQuestion = await userModel.getRecoveryData({userId: userid});
+            console.log(alreadyHasQuestion)
+            if(alreadyHasQuestion.success) return res.status(400).json({error: 'Ya tiene una pregunta de recuperacion establecida.'})
+            const {pregunta, respuesta} = req.body;
+            await recoveryDataValidation.validateTotal({pregunta, respuesta});
+
+            const result = await userModel.setRecoveryData({userId: userid, 
+                                                            question: pregunta,  
+                                                            answer: respuesta});
+
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: 'Error al establecer los datos', detalle: error.message})
+        }
+    }
+
+    static async getRecoveryQuestion(req, res){
+        try {
+            if (!SessionHandler.verifySession(req)) {
+                return res.json({ mensaje: 'No hay sesion activa' });
+            }
+            const {userid} = req.session;
+            const question = await userModel.getRecoveryData({userId: userid});
+            res.status(200).json(question);
+        } catch (error) {
+            res.status(500).json({error: 'Error al obtener la pregunta', detalle: error.message})
+        }
+    }
+
+    static async postRecoveryAnswer(req, res){
+        try {
+            if (!SessionHandler.verifySession(req)) {
+                return res.json({ mensaje: 'No hay sesion activa' });
+            }
+            const {userid} = req.session;
+            const {respuesta} = req.body;
+            await recoveryDataValidation.validatePartial({respuesta});
+            const result = await userModel.verifyRecoveryAnswer({userId: userid, answer: respuesta});
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: 'Error al verificar la respuesta', detalle: error.message})
+        }
+    }
+
+    static async putPassword(req, res){
+        try {
+            if (!SessionHandler.verifySession(req)) {
+                return res.json({ mensaje: 'No hay sesion activa' });
+            }
+            
+            const {userid} = req.session;
+            const {newPassword} = req.body
+            await registerValidation.validatePartial({password: newPassword})
+            const result = await userModel.setNewPassword({
+                newPassword,
+                userId: userid
+            })
+            await SessionHandler.closeSession(req, res)
+            res.status(200).json({
+                ...result,
+                msg: 'Su sesion ha sido cerrada, por favor vuelva a iniciar sesion.'
+            })
+        } catch (error) {
+            res.status(500).json({error: "Error al actualizar la contrasena", detalle: error.message})
+        }
+    }
 }
